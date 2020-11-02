@@ -17,4 +17,5 @@ public:
 	int SceneCount;
 private:
 	int screenID_;
+	virtual void DrawOwnScreen();
 };

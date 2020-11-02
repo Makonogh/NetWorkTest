@@ -121,8 +121,9 @@ void NetWork::SendStanby()
 			{
 				if (str.find("/data") != std::string::npos)
 				{
-
+					break;
 				}
+
 			}
 			/*while (std::getline(ifp, str, ','))
 			{

@@ -17,3 +17,7 @@ void BaseScene::Draw()
 {
 
 }
+
+void BaseScene::DrawOwnScreen()
+{
+}
