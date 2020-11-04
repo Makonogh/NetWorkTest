@@ -1,7 +1,7 @@
 #pragma once
+#include "NetWorkState.h"
 #include <DxLib.h>
 #include <memory>
-#include "NetWorkState.h"
 #include <vector>
 #include <array>
 #include <chrono>
@@ -18,12 +18,13 @@ enum class  MesType : unsigned char
 	POS						// ゲーム中のデータ
 };
 
-struct MesData
+struct MesHeader
 {
 	MesType type;			// 1バイト
-	unsigned short sdata;	// 2バイト
+	unsigned short id;	    // 2バイト
 	unsigned char cdata;	// 1バイト
-	int data[2];			// 8バイト
+	unsigned int length;   
+	//int data[2];			// 8バイト
 };
 
 union unionData
@@ -50,7 +51,7 @@ public:
 	std::array<IPDATA, 2> GetIp(void);
 	bool Update();
 	bool CloseNetWork(void);
-	bool SendMes(MesData& data);				
+	bool SendMes(MesHeader& data);				
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数

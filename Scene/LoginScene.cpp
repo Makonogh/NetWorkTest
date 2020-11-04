@@ -63,7 +63,6 @@ void LoginScene::Draw(void)
 			}
 		}
 	}
-	
 	ScreenFlip();
 }
 

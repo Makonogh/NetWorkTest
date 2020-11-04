@@ -10,7 +10,7 @@
 
 bool NetWork::SetNetWorkMode(NetWorkMode mode)
 {
-	MesData data;
+	MesHeader data;
 	auto b = sizeof(data);
 	if (mode == NetWorkMode::GUEST)
 	{
@@ -74,7 +74,7 @@ bool NetWork::CloseNetWork(void)
 	return false;
 }
 
-bool NetWork::SendMes(MesData& data)
+bool NetWork::SendMes(MesHeader& data)
 {
 	return false;
 }
@@ -82,7 +82,7 @@ bool NetWork::SendMes(MesData& data)
 void NetWork::SendStanby()
 {
 	auto hand = state_->GetnetHandle();
-	MesData data;
+	MesHeader data;
 	unionData udata;
 
 	std::ifstream ifp("image/mapBomb.tmx");
@@ -209,7 +209,7 @@ void NetWork::SendStanby()
 void NetWork::SendStart()
 {
 	auto hand = state_->GetnetHandle();
-	MesData data;
+	MesHeader data;
 	data.type = MesType::GAMESTART;
 	NetWorkSend(hand, &data, sizeof(data));
 	TRACE("スタート信号送信")
@@ -219,7 +219,7 @@ void NetWork::SendStart()
 bool NetWork::GetRevStanby(void)
 {
 	auto hand = state_->GetnetHandle();
-	MesData data;
+	MesHeader data;
 	while (GetNetWorkDataLength(hand) >= sizeof(data))
 	{
 		NetWorkRecv(hand, &data, sizeof(data));
@@ -266,7 +266,7 @@ bool NetWork::GetRevStanby(void)
 void NetWork::GetRevStart(void)
 {
 	auto hand = state_->GetnetHandle();
-	MesData data;
+	MesHeader data;
 
 	NetWorkRecv(hand, &data, sizeof(data));
 
