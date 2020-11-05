@@ -21,17 +21,17 @@ enum class  MesType : unsigned char
 struct MesHeader
 {
 	MesType type;			// 1バイト
-	unsigned short id;	    // 2バイト
 	unsigned char cdata;	// 1バイト
-	unsigned int length;   
+	unsigned short id;	    // 2バイト
+	unsigned int length;    // 4バイト
 	//int data[2];			// 8バイト
 };
 
+
 union unionData
 {
-	char cData[8];          // 1バイト×8
-	int iData[2];			// 4バイト×2
-	long long lData;		// 8バイト
+	char cData[4];          // 1バイト×4
+	int iData;			    // 4バイト
 };
 
 class NetWork
@@ -45,7 +45,7 @@ public:
 	bool SetNetWorkMode(NetWorkMode mode);
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
-
+	
 	ActiveState ConnectHost(IPDATA hostIP);
 	int GetHandle(void);
 	std::array<IPDATA, 2> GetIp(void);
@@ -61,6 +61,7 @@ private:
 	std::vector<int> RevTMX_;			
 	std::array<IPDATA, 2> arrayIP_;
  	std::unique_ptr<NetWorkState> state_;
+	std::vector<int> MapData_;
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
 	

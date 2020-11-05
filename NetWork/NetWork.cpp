@@ -49,7 +49,6 @@ ActiveState NetWork::GetActive(void)
 ActiveState NetWork::ConnectHost(IPDATA hostIP)
 {
 	return  state_->ConnectHost(hostIP);
-	
 }
 
 int NetWork::GetHandle(void)
@@ -90,19 +89,21 @@ void NetWork::SendStanby()
 	ifp.seekg(0, std::ios_base::end);
 	int size = static_cast<int>(ifp.tellg());
 
-	data = { MesType::TMX_SIZE,0,0,size,0 };
+	data = { MesType::TMX_SIZE,0,0,0};
 
 	NetWorkSend(hand, &data, sizeof(data));
 	ifp.seekg(0, std::ios_base::beg);
 
 	start = std::chrono::system_clock::now();
-	std::string str;
+	
+
+	/*std::string str;
 	std::stringstream stringstr;
 
 	unsigned short id = 0;
 	udata.lData = NULL;
-	int wcount = 0;
-	while (!ifp.eof())
+	int wcount = 0;*/
+	/*while (!ifp.eof())
 	{
 		do
 		{
@@ -125,7 +126,7 @@ void NetWork::SendStanby()
 				}
 
 			}
-			/*while (std::getline(ifp, str, ','))
+			while (std::getline(ifp, str, ','))
 			{
 				if (str.find("</data>") != std::string::npos)
 				{
@@ -194,14 +195,12 @@ void NetWork::SendStanby()
 		NetWorkSend(hand, &data, sizeof(data));
 		id++;
 	}*/
-		}
-	}
 	end = std::chrono::system_clock::now();  // 計測終了時間
 	auto time = end - start;
 	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
 	std::cout << msec << " msec" << std::endl;
 	
-	data = { MesType::STANBY,0,0,0,0 };
+	data = { MesType::STANBY,0,0,0};
 	NetWorkSend(hand,&data,sizeof(data));
 	state_->SetActive(ActiveState::Stanby);
 }
@@ -220,46 +219,45 @@ bool NetWork::GetRevStanby(void)
 {
 	auto hand = state_->GetnetHandle();
 	MesHeader data;
-	while (GetNetWorkDataLength(hand) >= sizeof(data))
-	{
-		NetWorkRecv(hand, &data, sizeof(data));
-
-		if (data.type == MesType::TMX_SIZE)
-		{
-			start = std::chrono::system_clock::now();
-			RevTMX_.resize(data.data[0]);
-			TRACE("受け取るTMXサイズは%dです。\n", RevTMX_.size());
-		}
-		if (data.type == MesType::TMX_DATA)
-		{
-			RevTMX_[data.data[0]] = data.data[1];
-			TRACE("%c",RevTMX_[data.data[0]]);
-		}
-		if (data.type == MesType::STANBY)
-		{
-			std::ofstream ofs("mapdata.tmx");
-			if (!ofs)
-			{
-				std::cerr << "ファイルオープンに失敗" << std::endl;
-				std::exit(1);
-			}
-			for (auto x : RevTMX_)
-			{
-				if (x != NULL)
-				{
-					ofs << x;
-				}
-			}
-			end = std::chrono::system_clock::now();  // 計測終了時間
-			auto time = end - start; 
-			auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
-			TRACE("初期化信号受信\n");
-			// 処理に要した時間をミリ秒に変換
-			
-			std::cout << msec << " msec" << std::endl;
-			return true;
-		}
-	}
+	//while (GetNetWorkDataLength(hand) >= sizeof(data))
+	//{
+	//	NetWorkRecv(hand, &data, sizeof(data));
+	//	if (data.type == MesType::TMX_SIZE)
+	//	{
+	//		start = std::chrono::system_clock::now();
+	//		RevTMX_.resize(data.data[0]);
+	//		TRACE("受け取るTMXサイズは%dです。\n", RevTMX_.size());
+	//	}
+	//	if (data.type == MesType::TMX_DATA)
+	//	{
+	//		RevTMX_[data.data[0]] = data.data[1];
+	//		TRACE("%c",RevTMX_[data.data[0]]);
+	//	}
+	//	if (data.type == MesType::STANBY)
+	//	{
+	//		std::ofstream ofs("mapdata.tmx");
+	//		if (!ofs)
+	//		{
+	//			std::cerr << "ファイルオープンに失敗" << std::endl;
+	//			std::exit(1);
+	//		}
+	//		for (auto x : RevTMX_)
+	//		{
+	//			if (x != NULL)
+	//			{
+	//				ofs << x;
+	//			}
+	//		}
+	//		end = std::chrono::system_clock::now();  // 計測終了時間
+	//		auto time = end - start; 
+	//		auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
+	//		TRACE("初期化信号受信\n");
+	//		// 処理に要した時間をミリ秒に変換
+	//		
+	//		std::cout << msec << " msec" << std::endl;
+	//		return true;
+	//	}
+	//}
 	return false;
 }
 
@@ -272,7 +270,7 @@ void NetWork::GetRevStart(void)
 
 	if (data.type == MesType::GAMESTART)
 	{
-		TRACE("スタート信号受信")
+		TRACE("スタート信号受信");
 		state_ -> SetActive(ActiveState::Play);
 	}
 }
