@@ -29,6 +29,7 @@ bool TMXMng::LoadTMX()
 	rapidxml::xml_node<>* node = doc.first_node("map");
 	LoadMapData(node);
 	/*ShowData(doc.first_node());*/
+	LoadCSV();
 	return false;
 }
 
@@ -99,5 +100,20 @@ bool TMXMng::LoadMapData(rapidxml::xml_node<>* node)
 			LayerMap_[layerNum][x] = std::atoi(result[x].c_str()) - 1;;
 		}
 	}
+	return false;
+}
+
+bool TMXMng::LoadCSV()
+{
+	int csvnum = 0;
+	for (auto y = 0;y < 4;y++)
+	{
+		for(int x = 0; x < 21 * 17; x++)
+		{
+			CSV_[csvnum] = LayerMap_[static_cast<LAYER>(y)][x];
+			csvnum++;
+		}
+	}
+
 	return false;
 }

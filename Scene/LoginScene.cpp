@@ -17,8 +17,8 @@ LoginScene::LoginScene()
 	screen_size_y = 0;
 	posx = 0;
 	posy = 0;
-	Image = LoadGraph("image/bullet.png", true);
-	LoadDivGraph("image/map.png",12,4,3,32,32, TileSet);
+	Image = LoadGraph("image/bakudan.png", true);
+	
 	GetDrawScreenSize(&screen_size_x, &screen_size_y);
 	
 	Act_[UpMode::SetNetWork] = std::bind(&LoginScene::SetNetWork,this);
@@ -35,13 +35,14 @@ LoginScene::~LoginScene()
 
 void LoginScene::init(void)
 {
-	lpTMXMng.LoadTMX();
+	
 }
 
 uniqueScene LoginScene::Update(uniqueScene own)
 {
 	Act_[upMode]();
 	lpNetWork.Update();
+	Draw();
 	return own;
 }
 
@@ -49,20 +50,7 @@ void LoginScene::Draw(void)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClsDrawScreen();
-
-	auto mapData = lpTMXMng.GetMapData();
-	for (auto data:mapData)
-	{
-		for (int y = 0; y < 17; y++)
-		{
-			for (int x = 0; x < 21; x++)
-			{
-				if (data.second[y * 21 + x] > 0) {
-					DrawGraph(x * 32, y * 32, TileSet[data.second[y * 21 + x]], true);
-				}
-			}
-		}
-	}
+	DrawGraph(0,0,Image,true);
 	ScreenFlip();
 }
 
@@ -101,6 +89,7 @@ void LoginScene::SetNetWork(void)
 	switch (lpNetWork.GetNetWorkMode())
 	{
 	case NetWorkMode::HOST:
+		lpTMXMng.LoadTMX();
 		std::cout << "ホストモード\nです";
 		break;
 	case NetWorkMode::GUEST:
@@ -148,6 +137,7 @@ void LoginScene::StartInit(void)
 	{
 		if (lpNetWork.GetNetWorkMode() == NetWorkMode::HOST)
 		{
+			
 			lpNetWork.SendStanby();
 			TRACE("初期化情報送信済み\nスタート信号待ち")
 		}
@@ -231,5 +221,5 @@ void LoginScene::Play(void)
 		std::cout << "異常発生\n";
 		break;
 	}
-	Draw();
+	
 }

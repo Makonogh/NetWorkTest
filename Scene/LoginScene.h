@@ -30,7 +30,7 @@ private:
 	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
 
 	int Image;
-	int TileSet[12];
+	
 	int posx;
 	int posy;
 	int screen_size_x;

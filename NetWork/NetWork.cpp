@@ -80,128 +80,133 @@ bool NetWork::SendMes(MesHeader& data)
 
 void NetWork::SendStanby()
 {
-	auto hand = state_->GetnetHandle();
-	MesHeader data;
-	unionData udata;
-
-	std::ifstream ifp("image/mapBomb.tmx");
-
-	ifp.seekg(0, std::ios_base::end);
-	int size = static_cast<int>(ifp.tellg());
-
-	data = { MesType::TMX_SIZE,0,0,0};
-
-	NetWorkSend(hand, &data, sizeof(data));
-	ifp.seekg(0, std::ios_base::beg);
-
-	start = std::chrono::system_clock::now();
+	/*std::ifstream ifp("image/mapBomb.tmx");*/
 	
+	Header header;
+	MesPacket data;
+	//ifp.seekg(0, std::ios_base::end);
+	//unsigned int size = static_cast<int>(ifp.tellg()) / 4;
+	/*ifp.seekg(0, std::ios_base::beg);*/
+	unsigned int size = lpTMXMng.GetCSV().size();
+	header = { MesType::TMX_SIZE,0,0,1 };
+	data.insert(data.begin(), {size});
+	SortMes(header,data);
+	SendMes(data);
+	start = std::chrono::system_clock::now();
 
-	/*std::string str;
-	std::stringstream stringstr;
+	/*auto id = 0;*/
+	//for (auto s = size;s -= 250;s <= 0)
+	//{
+	//	header = { MesType::TMX_DATA,0,0,size };
+	//	data.clear();
+	//	data.resize(250);
+	//	for (auto i = 0;i++; i >= 250)
+	//	{
+	//		data[i] = ifp);
+	//	}
+	//	id++;
+	//}
 
-	unsigned short id = 0;
-	udata.lData = NULL;
-	int wcount = 0;*/
-	/*while (!ifp.eof())
-	{
-		do
-		{
-			std::getline(ifp, str);
-			if (ifp.eof())
-			{
-				break;
-			}
-		} while (str.find("data encoding") == std::string::npos);
-		if (!ifp.eof())
-		{
-			std::getline(ifp,str);
-			stringstr << str;
+	//std::string str;
+	//std::stringstream stringstr;
+	//unsigned short id = 0;
+	//udata.lData = NULL;
+	//int wcount = 0;
+	//while (!ifp.eof())
+	//{
+	//	do
+	//	{
+	//		std::getline(ifp, str);
+	//		if (ifp.eof())
+	//		{
+	//			break;
+	//		}
+	//	} while (str.find("data encoding") == std::string::npos);
+	//	if (!ifp.eof())
+	//	{
+	//		std::getline(ifp,str);
+	//		stringstr << str;
+	//		while (stringstr.eof())
+	//		{
+	//			if (str.find("/data") != std::string::npos)
+	//			{
+	//				break;
+	//			}
+	//		}
+	//		while (std::getline(ifp, str, ','))
+	//		{
+	//			if (str.find("</data>") != std::string::npos)
+	//			{
+	//				const char* str1 = &str.erase(0);
+	//				const char* str2 = &str[str.size() - 1];
+	//				if (((wcount % 16) % 2) == 0)
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str1);
+	//					wcount++;
+	//				}
+	//				else
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str1) << 4;
+	//					wcount++;
+	//				}
+	//				if (wcount % 16 == 0)
+	//				{
+	//					data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
+	//					id++;
+	//					NetWorkSend(hand, &data, sizeof(data));
+	//					udata.lData = NULL;
+	//				}
+	//				if (((wcount % 16) % 2) == 0)
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str2);
+	//					wcount++;
+	//				}
+	//				else
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str2) << 4;
+	//					wcount++;
+	//				}
+	//			}
+	//			else if (str.find("\n") != std::string::npos)
+	//			{
+	//				str.erase(0, 1);
+	//			}
+	//			else
+	//			{
+	//				TRACE("%d\n", std::atoi(str.c_str()));
+	//				if (((wcount % 16) % 2) == 0)
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str.c_str());
+	//					wcount++;
+	//				}
+	//				else
+	//				{
+	//					udata.cData[(wcount % 16) / 2] |= std::atoi(str.c_str()) << 4;
+	//					wcount++;
+	//				}
+	//				if (wcount % 16 == 0)
+	//				{
+	//					data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
+	//					id++;
+	//					NetWorkSend(hand, &data, sizeof(data));
+	//					udata.lData = NULL;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//if (wcount % 16 != 0)
+	//{
+	//	data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
+	//	NetWorkSend(hand, &data, sizeof(data));
+	//	id++;
+	//}
 
-			while (stringstr.eof())
-			{
-				if (str.find("/data") != std::string::npos)
-				{
-					break;
-				}
-
-			}
-			while (std::getline(ifp, str, ','))
-			{
-				if (str.find("</data>") != std::string::npos)
-				{
-					const char* str1 = &str.erase(0);
-					const char* str2 = &str[str.size() - 1];
-
-					if (((wcount % 16) % 2) == 0)
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str1);
-						wcount++;
-					}
-					else
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str1) << 4;
-						wcount++;
-					}
-					if (wcount % 16 == 0)
-					{
-						data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
-						id++;
-						NetWorkSend(hand, &data, sizeof(data));
-						udata.lData = NULL;
-					}
-					if (((wcount % 16) % 2) == 0)
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str2);
-						wcount++;
-					}
-					else
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str2) << 4;
-						wcount++;
-					}
-				}
-				else if (str.find("\n") != std::string::npos)
-				{
-					str.erase(0, 1);
-				}
-				else
-				{
-					TRACE("%d\n", std::atoi(str.c_str()));
-					if (((wcount % 16) % 2) == 0)
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str.c_str());
-						wcount++;
-					}
-					else
-					{
-						udata.cData[(wcount % 16) / 2] |= std::atoi(str.c_str()) << 4;
-						wcount++;
-					}
-					if (wcount % 16 == 0)
-					{
-						data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
-						id++;
-						NetWorkSend(hand, &data, sizeof(data));
-						udata.lData = NULL;
-					}
-				}
-			}
-		}
-	}
-	if (wcount % 16 != 0)
-	{
-		data = { MesType::TMX_DATA,id,0,udata.iData[0],udata.iData[1] };
-		NetWorkSend(hand, &data, sizeof(data));
-		id++;
-	}*/
 	end = std::chrono::system_clock::now();  // Œv‘ªI—¹ŽžŠÔ
 	auto time = end - start;
 	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
 	std::cout << msec << " msec" << std::endl;
 	
-	data = { MesType::STANBY,0,0,0};
-	NetWorkSend(hand,&data,sizeof(data));
 	state_->SetActive(ActiveState::Stanby);
 }
 
@@ -218,7 +223,7 @@ void NetWork::SendStart()
 bool NetWork::GetRevStanby(void)
 {
 	auto hand = state_->GetnetHandle();
-	MesHeader data;
+
 	//while (GetNetWorkDataLength(hand) >= sizeof(data))
 	//{
 	//	NetWorkRecv(hand, &data, sizeof(data));
@@ -259,6 +264,19 @@ bool NetWork::GetRevStanby(void)
 	//	}
 	//}
 	return false;
+}
+
+void NetWork::SendMes(MesPacket& data)
+{
+	auto hand = state_->GetnetHandle();
+
+	NetWorkSend(hand, data.data(), data.size() * sizeof(int));
+}
+
+void NetWork::SortMes(Header& header, MesPacket& data)
+{
+	data.insert(data.begin(), { header.intHeader[1] });
+	data.insert(data.begin(), { header.intHeader[0] });
 }
 
 void NetWork::GetRevStart(void)

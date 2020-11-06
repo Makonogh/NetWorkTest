@@ -6,7 +6,8 @@ class GameScene :
 public:
 	GameScene();
 	~GameScene();
+	void Draw();
 private:
-	
+	int TileSet[12];
 };
 
