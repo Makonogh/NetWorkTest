@@ -78,7 +78,7 @@ void TMXMng::ShowData(rapidxml::xml_node<>* node, int indent)
 
 bool TMXMng::LoadMapData(rapidxml::xml_node<>* node)
 {
-	/*rapidxml::xml_attribute<>* atb = node->first_node()->next_sibling()->first_attribute();*/
+	
 	for (rapidxml::xml_node<>* layer = node->first_node()->next_sibling("layer");
 		layer != nullptr;
 		layer = layer->next_sibling())
