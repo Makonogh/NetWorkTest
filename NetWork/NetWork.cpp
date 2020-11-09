@@ -73,11 +73,6 @@ bool NetWork::CloseNetWork(void)
 	return false;
 }
 
-bool NetWork::SendMes(MesHeader& data)
-{
-	return false;
-}
-
 void NetWork::SendStanby()
 {
 	/*std::ifstream ifp("image/mapBomb.tmx");*/

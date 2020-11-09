@@ -11,18 +11,19 @@
 //using uniNetMode = std::unique_ptr<NetWorkState>;
 enum class  MesType : unsigned char
 {
+	NON = 100,
 	STANBY,
 	GAMESTART,
 	TMX_SIZE,
 	TMX_DATA,
-	POS						// ゲーム中のデータ
+	POS						// パケットの種類データ
 };
 
 struct MesHeader			// 計8バイト
 {
 	MesType type;			// 1バイト
-	unsigned char cdata;	// 1バイト
-	unsigned short id;	    // 2バイト
+	unsigned char next;		// 1バイト 分割の場合　次がある1 ない0
+	unsigned short sendID;  // 2バイト 
 	unsigned int length;    // 4バイト			
 };
 
@@ -57,7 +58,6 @@ public:
 	std::array<IPDATA, 2> GetIp(void);
 	bool Update();
 	bool CloseNetWork(void);
-	bool SendMes(MesHeader& data);				
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数

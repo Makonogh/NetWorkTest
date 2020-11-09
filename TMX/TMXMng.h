@@ -29,6 +29,7 @@ public:
 	bool LoadTMX();
 	bool LoadTSX(void);
 	std::vector<int> GetCSV(void);
+	std::pair<int, int> GetMapSize(void);
 private:
 	TMXMng();
 	~TMXMng();
@@ -36,7 +37,9 @@ private:
 	// 読み込んだtmxをとりあえずノード　データ　アトリビュート全部コンソールに表示する
 	bool LoadMapData(rapidxml::xml_node<>* node);	// マップデータをLayerMap_に格納する
 	bool LoadCSV();		// CSVを抽出
-
+	
+	int width;
+	int length;
 	std::map < LAYER, std::vector<int>> LayerMap_;
 	std::vector<int> CSV_;							// TMXのCSV部分の数字だけを格納
 };

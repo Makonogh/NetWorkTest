@@ -43,6 +43,14 @@ std::vector<int> TMXMng::GetCSV(void)
 	return CSV_;
 }
 
+std::pair<int, int> TMXMng::GetMapSize(void)
+{
+	std::pair<int, int> redata;
+	redata.first = width;
+	redata.second = length;
+	return redata;
+}
+
 void TMXMng::ShowData(rapidxml::xml_node<>* node, int indent)
 {
 	//ÉmÅ[ÉhÇ™Ç»ÇØÇÍÇŒÇ»Ç…Ç‡ÇµÇ»Ç¢
@@ -110,10 +118,9 @@ bool TMXMng::LoadCSV()
 	{
 		for(int x = 0; x < 21 * 17; x++)
 		{
-			CSV_[csvnum] = LayerMap_[static_cast<LAYER>(y)][x];
+			CSV_.emplace_back(LayerMap_[static_cast<LAYER>(y)][x]);
 			csvnum++;
 		}
 	}
-
 	return false;
 }
