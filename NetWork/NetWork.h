@@ -21,10 +21,10 @@ enum class  MesType : unsigned char
 
 struct MesHeader			// 計8バイト
 {
-	MesType type;			// 1バイト
+	MesType type;			// 1バイト メッセージの種類
 	unsigned char next;		// 1バイト 分割の場合　次がある1 ない0
-	unsigned short sendID;  // 2バイト 
-	unsigned int length;    // 4バイト			
+	unsigned short sendID;  // 2バイト 分割時のナンバリング
+	unsigned int length;    // 4バイト データ部の長さ(int長)
 };
 
 union Header
@@ -40,7 +40,7 @@ union unionData
 	int iData;			    // 4バイト
 };
 
-using MesPacket = std::vector<unionData>;
+using MesPacket = std::vector<unionData>; 
 
 class NetWork
 {
@@ -54,6 +54,8 @@ public:
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	ActiveState ConnectHost(IPDATA hostIP);
+	void SendMes(MesType type,MesPacket data);
+	void SendMes(MesType type);
 	int GetHandle(void);
 	std::array<IPDATA, 2> GetIp(void);
 	bool Update();
@@ -63,9 +65,10 @@ public:
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
 	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関
 private:
-	void SendMes(MesPacket& data);
 	void SortMes(Header& header,MesPacket& data);
 	
+	unsigned int intSendCount_;			// 送信バイト長(iniファイルのsetting.txtからの読み込み)
+
 	std::vector<int> RevTMX_;			
 	std::array<IPDATA, 2> arrayIP_;
  	std::unique_ptr<NetWorkState> state_;

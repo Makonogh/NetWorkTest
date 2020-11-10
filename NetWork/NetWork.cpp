@@ -51,6 +51,44 @@ ActiveState NetWork::ConnectHost(IPDATA hostIP)
 	return  state_->ConnectHost(hostIP);
 }
 
+void NetWork::SendMes(MesType mesType, MesPacket data)
+{
+	Header header;
+	auto hand = state_->GetnetHandle();		// ネットワークハンドルを取得
+	short id = 0;							// 分割時のナンバリングカウント
+	header.mesHeader.type = mesType;
+
+	data.emplace(data.begin(), header.intHeader[1]);
+	data.emplace(data.begin(), header.intHeader[0]);
+	do {
+		if (intSendCount_ >= data.size() * 4)
+		{
+			header.mesHeader.next = 0;
+			header.mesHeader.length = data.size();
+			data[0] = { header.intHeader[0] };
+			data[1] = { header.intHeader[1] };
+			NetWorkSend(hand, &data, data.size() * sizeof(data));
+			data.erase(data.begin() + 2);
+		}
+		else
+		{
+			header.mesHeader.next = 1;
+			header.mesHeader.length = intSendCount_ / 4;
+			header.mesHeader.sendID = id;
+			data[0] = { header.intHeader[0] };
+			data[1] = { header.intHeader[1] };
+			NetWorkSend(hand, &data, intSendCount_);
+			data.erase(data.begin() + 2,data.begin() + 2 + (intSendCount_ / 4));
+		}
+	} while (data.size() <= 2);
+}
+
+void NetWork::SendMes(MesType type)
+{
+	MesPacket expData;
+	SendMes(type, expData);
+}
+
 int NetWork::GetHandle(void)
 {
 	return state_->GetnetHandle();
@@ -77,16 +115,16 @@ void NetWork::SendStanby()
 {
 	/*std::ifstream ifp("image/mapBomb.tmx");*/
 	
-	Header header;
-	MesPacket data;
+	/*Header header;
+	MesPacket data;*/
 	//ifp.seekg(0, std::ios_base::end);
 	//unsigned int size = static_cast<int>(ifp.tellg()) / 4;
 	/*ifp.seekg(0, std::ios_base::beg);*/
-	unsigned int size = lpTMXMng.GetCSV().size();
+	/*unsigned int size = lpTMXMng.GetCSV().size();
 	header = { MesType::TMX_SIZE,0,0,1 };
 	data.insert(data.begin(), {size});
 	SortMes(header,data);
-	SendMes(data);
+	*/
 	start = std::chrono::system_clock::now();
 
 	/*auto id = 0;*/
@@ -261,12 +299,12 @@ bool NetWork::GetRevStanby(void)
 	return false;
 }
 
-void NetWork::SendMes(MesPacket& data)
-{
-	auto hand = state_->GetnetHandle();
-
-	NetWorkSend(hand, data.data(), data.size() * sizeof(int));
-}
+//void NetWork::SendMes(MesPacket& data)
+//{
+//	auto hand = state_->GetnetHandle();
+//
+//	NetWorkSend(hand, data.data(), data.size() * sizeof(int));
+//}
 
 void NetWork::SortMes(Header& header, MesPacket& data)
 {
@@ -290,6 +328,7 @@ void NetWork::GetRevStart(void)
 
 NetWork::NetWork()
 {
+	intSendCount_ = 1000;
 }
 
 NetWork::~NetWork()

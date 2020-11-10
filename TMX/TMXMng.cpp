@@ -1,4 +1,5 @@
 #include "TMXMng.h"
+#include "../NetWork/NetWork.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -6,6 +7,8 @@
 
 TMXMng::TMXMng()
 {
+	width = 21;
+	length = 17;
 	LayerMap_[LAYER::BG].resize(21 * 17);
 	LayerMap_[LAYER::ITEM].resize(21 * 17);
 	LayerMap_[LAYER::OBJ].resize(21 * 17);
@@ -38,9 +41,16 @@ bool TMXMng::LoadTSX(void)
 	return false;
 }
 
-std::vector<int> TMXMng::GetCSV(void)
-{
-	return CSV_;
+bool TMXMng::SendMapData(void)
+{/*
+	MesPacket expData;
+	for (auto x:CSV_)
+	{
+		expData.emplace_back(x);
+	}
+
+	lpNetWork.SendMes(MesType::TMX_DATA,expData);*/
+	return false;
 }
 
 std::pair<int, int> TMXMng::GetMapSize(void)
@@ -118,7 +128,7 @@ bool TMXMng::LoadCSV()
 	{
 		for(int x = 0; x < 21 * 17; x++)
 		{
-			CSV_.emplace_back(LayerMap_[static_cast<LAYER>(y)][x]);
+			CSV_.emplace_back(LayerMap_[static_cast<LAYER>(y)][x] );
 			csvnum++;
 		}
 	}

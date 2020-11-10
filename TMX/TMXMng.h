@@ -28,7 +28,7 @@ public:
 	std::map < LAYER, std::vector<int>> GetMapData();
 	bool LoadTMX();
 	bool LoadTSX(void);
-	std::vector<int> GetCSV(void);
+	bool SendMapData(void);
 	std::pair<int, int> GetMapSize(void);
 private:
 	TMXMng();
@@ -41,6 +41,6 @@ private:
 	int width;
 	int length;
 	std::map < LAYER, std::vector<int>> LayerMap_;
-	std::vector<int> CSV_;							// TMX‚ÌCSV•”•ª‚Ì”š‚¾‚¯‚ğŠi”[
+	std::vector<unsigned int> CSV_;							// TMX‚ÌCSV•”•ª‚Ì”š‚¾‚¯‚ğŠi”[
 };
 
