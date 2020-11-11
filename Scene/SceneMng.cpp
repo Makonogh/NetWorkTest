@@ -1,5 +1,6 @@
 #include "SceneMng.h"
 #include "LoginScene.h"
+#include "GameScene.h"
 #include <DxLib.h>
 
 SceneMng* SceneMng::s_instance = nullptr;

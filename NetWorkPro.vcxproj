@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Obj\Char.cpp" />
     <ClCompile Include="input\GamePad.cpp" />
     <ClCompile Include="input\KeyInput.cpp" />
     <ClCompile Include="NetWork\GuestState.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetWork\NetWorkState.cpp" />
     <ClCompile Include="NetWork\NetWork.cpp" />
+    <ClCompile Include="Obj\Obj.cpp" />
     <ClCompile Include="Scene\BaseScene.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\SceneMng.cpp" />
@@ -162,6 +164,9 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common\details\Vector2.h" />
+    <ClInclude Include="common\Vector2.h" />
+    <ClInclude Include="Obj\Char.h" />
     <ClInclude Include="input\Controller.h" />
     <ClInclude Include="input\GamePad.h" />
     <ClInclude Include="input\InputID.h" />
@@ -170,6 +175,7 @@
     <ClInclude Include="NetWork\HostState.h" />
     <ClInclude Include="NetWork\NetWorkState.h" />
     <ClInclude Include="NetWork\NetWork.h" />
+    <ClInclude Include="Obj\Obj.h" />
     <ClInclude Include="Parse\rapidxml.hpp" />
     <ClInclude Include="Parse\rapidxml_iterators.hpp" />
     <ClInclude Include="Parse\rapidxml_print.hpp" />

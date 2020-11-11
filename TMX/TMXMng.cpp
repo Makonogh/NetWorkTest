@@ -27,7 +27,7 @@ std::map<LAYER, std::vector<int>> TMXMng::GetMapData()
 bool TMXMng::LoadTMX()
 {
 	rapidxml::xml_document<> doc;		// XmlÇì«Ç›çûÇﬁDom
-	rapidxml::file<> file("image/mapBomb.tmx");
+	rapidxml::file<> file("image/test.tmx");
 	doc.parse<0>(file.data());
 	rapidxml::xml_node<>* node = doc.first_node("map");
 	LoadMapData(node);
@@ -42,14 +42,14 @@ bool TMXMng::LoadTSX(void)
 }
 
 bool TMXMng::SendMapData(void)
-{/*
+{
 	MesPacket expData;
 	for (auto x:CSV_)
 	{
-		expData.emplace_back(x);
+		expData.emplace_back(unionData{ x });
 	}
 
-	lpNetWork.SendMes(MesType::TMX_DATA,expData);*/
+	lpNetWork.SendMes(MesType::TMX_DATA,expData);
 	return false;
 }
 

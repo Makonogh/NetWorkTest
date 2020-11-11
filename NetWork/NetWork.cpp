@@ -58,8 +58,8 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 	short id = 0;							// 分割時のナンバリングカウント
 	header.mesHeader.type = mesType;
 
-	data.emplace(data.begin(),unionData{ header.intHeader[1]});
-	data.emplace(data.begin(), unionData{ header.intHeader[0] });
+	data.emplace(data.begin(), unionData{ header.intHeader[1]});
+	data.emplace(data.begin(), unionData{ header.intHeader[0]});
 	do {
 		if (intSendCount_ >= data.size() * 4)
 		{

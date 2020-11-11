@@ -1,5 +1,6 @@
 #include "DxLib.h"
 #include "LoginScene.h"
+#include "GameScene.h"
 #include "../NetWork/NetWork.h"
 #include "../_debug/_DebugConOut.h"
 #include "../input/GamePad.h"
@@ -35,26 +36,31 @@ LoginScene::~LoginScene()
 
 void LoginScene::init(void)
 {
-	
 }
 
 uniqueScene LoginScene::Update(uniqueScene own)
 {
-	Act_[upMode]();
+	if (Act_[upMode]())
+	{
+		return std::make_unique<GameScene>();
+	}
 	lpNetWork.Update();
 	Draw();
+
+
 	return own;
 }
 
 void LoginScene::Draw(void)
 {
+	MakeScreen(700,600);
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClsDrawScreen();
 	DrawGraph(0,0,Image,true);
 	ScreenFlip();
 }
 
-void LoginScene::SetNetWork(void)
+bool LoginScene::SetNetWork(void)
 {
 	auto ipData = lpNetWork.GetIp();
 	TRACE("自分のIPアドレス:%d.%d.%d.%d\n", ipData[0].d1, ipData[0].d2, ipData[0].d3, ipData[0].d4);
@@ -82,6 +88,7 @@ void LoginScene::SetNetWork(void)
 			}
 			lpNetWork.SetNetWorkMode(NetWorkMode::OFFLINE);
 			init();
+			lpTMXMng.LoadTMX();
 			upMode = UpMode::Play;
 		}
 	} while (mode < 0 || mode > 2);
@@ -102,11 +109,11 @@ void LoginScene::SetNetWork(void)
 		std::cout << "異常発生\n";
 		break;
 	}
-	TRACE("状態は%dです。\n", lpNetWork.GetActive());
-	
+	return false;
+	TRACE("状態は%dです。\n", lpNetWork.GetActive());	
 }
 
-void LoginScene::SetHostIP(void)
+bool LoginScene::SetHostIP(void)
 {
 	IPDATA hostIP;		// ホストのIP
 	std::string ip;
@@ -129,9 +136,10 @@ void LoginScene::SetHostIP(void)
 		TRACE("接続完了。\n");
 		upMode = UpMode::StartInit;
 	}
+	return false;
 }
 
-void LoginScene::StartInit(void)
+bool LoginScene::StartInit(void)
 {
 	if (lpNetWork.GetActive() == ActiveState::Init)
 	{
@@ -157,69 +165,71 @@ void LoginScene::StartInit(void)
 	{
 		upMode = UpMode::Play;
 	}
+	return false;
 }
 
-void LoginScene::Play(void)
+bool LoginScene::Play(void)
 {
-	int lengthx = 0;
-	int lengthy = 0;
-	data.first = 0;
-	data.second = 0;
-	switch (lpNetWork.GetNetWorkMode())
-	{
-	case NetWorkMode::HOST:
-		if (GetNetWorkDataLength(lpNetWork.GetHandle()) >= sizeof(data))
-		{
-			NetWorkRecv(lpNetWork.GetHandle(), &data, sizeof(data));
-			posx += data.first;
-			posy += data.second;
-		}
-		/*TRACE("%d", data);*/
-		break;
-	case NetWorkMode::GUEST:
+	return true;
+	//int lengthx = 0;
+	//int lengthy = 0;
+	//data.first = 0;
+	//data.second = 0;
+	//switch (lpNetWork.GetNetWorkMode())
+	//{
+	//case NetWorkMode::HOST:
+	//	if (GetNetWorkDataLength(lpNetWork.GetHandle()) >= sizeof(data))
+	//	{
+	//		NetWorkRecv(lpNetWork.GetHandle(), &data, sizeof(data));
+	//		posx += data.first;
+	//		posy += data.second;
+	//	}
+	//	/*TRACE("%d", data);*/
+	//	break;
+	//case NetWorkMode::GUEST:
 
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
-		{
-			lengthy = -10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
-		{
-			lengthy = 10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
-		{
-			lengthx = 10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
-		{
-			lengthx = -10;
-		}
-		data.first = lengthx;
-		data.second = lengthy;
-		/*TRACE("%d", data);*/
-		NetWorkSend(lpNetWork.GetHandle(), &data, sizeof(data));
-		break;
-	case NetWorkMode::OFFLINE:
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
-		{
-			posy -= 10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
-		{
-			posy += 10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
-		{
-			posx += 10;
-		}
-		if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
-		{
-			posx -= 10;
-		}
-		break;
-	default:
-		std::cout << "異常発生\n";
-		break;
-	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
+	//	{
+	//		lengthy = -10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
+	//	{
+	//		lengthy = 10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
+	//	{
+	//		lengthx = 10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
+	//	{
+	//		lengthx = -10;
+	//	}
+	//	data.first = lengthx;
+	//	data.second = lengthy;
+	//	/*TRACE("%d", data);*/
+	//	NetWorkSend(lpNetWork.GetHandle(), &data, sizeof(data));
+	//	break;
+	//case NetWorkMode::OFFLINE:
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
+	//	{
+	//		posy -= 10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
+	//	{
+	//		posy += 10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
+	//	{
+	//		posx += 10;
+	//	}
+	//	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
+	//	{
+	//		posx -= 10;
+	//	}
+	//	break;
+	//default:
+	//	std::cout << "異常発生\n";
+	//	break;
+	//}
 	
 }

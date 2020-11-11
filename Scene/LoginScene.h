@@ -23,10 +23,10 @@ public:
 	uniqueScene Update(uniqueScene own) override;
 	void Draw(void) override;
 private:
-	void SetNetWork(void);
-	void SetHostIP(void);
-	void StartInit(void);
-	void Play(void);
+	bool SetNetWork(void);
+	bool SetHostIP(void);
+	bool StartInit(void);
+	bool Play(void);
 	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
 
 	int Image;
@@ -37,7 +37,7 @@ private:
 	int screen_size_y;
 	std::pair<int, int> data;
 	UpMode upMode;
-	std::map<UpMode, std::function<void(void)>> Act_;
+	std::map<UpMode, std::function<bool(void)>> Act_;
 
 };
 
