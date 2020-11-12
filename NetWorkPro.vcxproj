@@ -160,6 +160,7 @@
     <ClCompile Include="Scene\LoginScene.cpp" />
     <ClCompile Include="Scene\Transition.cpp" />
     <ClCompile Include="TMX\TMXMng.cpp" />
+    <ClCompile Include="Obj\Wall.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="Scene\LoginScene.h" />
     <ClInclude Include="Scene\Transition.h" />
     <ClInclude Include="TMX\TMXMng.h" />
+    <ClInclude Include="Obj\Wall.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>

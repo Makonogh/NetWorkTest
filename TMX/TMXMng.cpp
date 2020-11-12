@@ -115,7 +115,7 @@ bool TMXMng::LoadMapData(rapidxml::xml_node<>* node)
 		}
 		for (int x = 0; x < 21 * 17; x++)
 		{
-			LayerMap_[layerNum][x] = std::atoi(result[x].c_str()) - 1;;
+			LayerMap_[layerNum][x] = std::atoi(result[x].c_str()) - 1;
 		}
 	}
 	return false;

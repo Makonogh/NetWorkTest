@@ -30,7 +30,6 @@ private:
 	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
 
 	int Image;
-	
 	int posx;
 	int posy;
 	int screen_size_x;
@@ -38,6 +37,5 @@ private:
 	std::pair<int, int> data;
 	UpMode upMode;
 	std::map<UpMode, std::function<bool(void)>> Act_;
-
 };
 
