@@ -1,6 +1,7 @@
 #include "SceneMng.h"
 #include "LoginScene.h"
 #include "GameScene.h"
+#include "../_debug/_DebugDispOut.h"
 #include <DxLib.h>
 
 SceneMng* SceneMng::s_instance = nullptr;
@@ -9,7 +10,8 @@ void SceneMng::Run(void)
 {
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
-		_activeScene = (*_activeScene).Update(std::move(_activeScene));
+		_activeScene = (*_activeScene).Update(std::move(_activeScene));	
+		Fps();
 		Draw();
 	}
 }
@@ -25,6 +27,11 @@ SceneMng::~SceneMng()
 
 void SceneMng::Draw(void)
 {
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClsDrawScreen();
+	DrawGraph(0,0,_activeScene->GetScreenID(),true);
+	_dbgDrawFormatString(32, 32 * 15 + 8, 0xffff00, "1/%d", fpsView_);
+	ScreenFlip();
 }
 
 bool SceneMng::Init(void)
@@ -38,5 +45,22 @@ bool SceneMng::Init(void)
 		return false;
 	}
 	_activeScene = std::make_unique<LoginScene>();
-	return false;
+	start_ = std::chrono::system_clock::now();
+	SetAlwaysRunFlag(true);
+	return true;
+}
+
+void SceneMng::Fps(void)
+{
+	end_ = std::chrono::system_clock::now();
+	if (std::chrono::duration_cast<std::chrono::milliseconds>(end_ - start_).count() >= 1000)
+	{
+		fpsView_ = frameCount_;
+		frameCount_ = 0;
+		start_ = end_;
+	}
+	else
+	{
+		frameCount_++;
+	}
 }

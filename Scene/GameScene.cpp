@@ -29,6 +29,8 @@ GameScene::GameScene()
 			}
 		}
 	}
+
+	screenID_ = MakeScreen(32 * 21 , 32 * 17,true);
 }
 
 GameScene::~GameScene()
@@ -47,7 +49,7 @@ uniqueScene GameScene::Update(uniqueScene own)
 
 void GameScene::Draw()
 {
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 	
 	for (int y = 0; y < 17; y++)
@@ -70,5 +72,4 @@ void GameScene::Draw()
 	{
 		data->Draw();
 	}
-	ScreenFlip();
 }

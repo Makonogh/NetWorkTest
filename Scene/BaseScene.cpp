@@ -5,7 +5,12 @@ BaseScene::BaseScene()
 	SceneCount = 0;
 }
 
-void BaseScene::init()
+int BaseScene::GetScreenID(void)
+{
+	return screenID_;
+}
+
+void BaseScene::Init()
 {
 }
 

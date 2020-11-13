@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <DxLib.h>
+#include <chrono>
 
 class BaseScene;
 
@@ -10,12 +11,15 @@ class BaseScene
 {
 public:
 	BaseScene();
-	virtual void init();
+	int GetScreenID(void);
+	virtual void Init();
 	virtual ~BaseScene();
 	virtual uniqueScene Update(uniqueScene) = 0;
 	virtual void Draw();
 	int SceneCount;
 private:
-	int screenID_;
 	virtual void DrawOwnScreen();
+	
+protected:
+	int screenID_;
 };

@@ -34,7 +34,13 @@ private:
 	~SceneMng();
 	void Draw(void);
 	bool Init(void);
+	void Fps(void);
+
 	uniqueScene _activeScene;
 	static SceneMng* s_instance;
+	int frameCount_;
+	int fpsView_;
+	std::chrono::system_clock::time_point start_;
+	std::chrono::system_clock::time_point end_;
 };
 

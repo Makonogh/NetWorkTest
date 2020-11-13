@@ -19,7 +19,6 @@ class LoginScene :
 public:
 	LoginScene();
 	~LoginScene();
-	void init(void) override;
 	uniqueScene Update(uniqueScene own) override;
 	void Draw(void) override;
 private:
@@ -27,8 +26,8 @@ private:
 	bool SetHostIP(void);
 	bool StartInit(void);
 	bool Play(void);
-	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
 
+	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
 	int Image;
 	int posx;
 	int posy;

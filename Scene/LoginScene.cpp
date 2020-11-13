@@ -28,13 +28,11 @@ LoginScene::LoginScene()
 	Act_[UpMode::Play] = std::bind(&LoginScene::Play, this);
 
 	upMode = UpMode::SetNetWork;
+
+	screenID_ = MakeScreen(32 * 30 ,32 * 25);
 }
 
 LoginScene::~LoginScene()
-{
-}
-
-void LoginScene::init(void)
 {
 }
 
@@ -47,7 +45,6 @@ uniqueScene LoginScene::Update(uniqueScene own)
 	lpNetWork.Update();
 	Draw();
 
-
 	return own;
 }
 
@@ -57,7 +54,7 @@ void LoginScene::Draw(void)
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClsDrawScreen();
 	DrawGraph(0,0,Image,true);
-	ScreenFlip();
+	/*ScreenFlip();*/
 }
 
 bool LoginScene::SetNetWork(void)
@@ -87,7 +84,6 @@ bool LoginScene::SetNetWork(void)
 				std::cout << "ˆÙí‚È”’l\n";
 			}
 			lpNetWork.SetNetWorkMode(NetWorkMode::OFFLINE);
-			init();
 			lpTMXMng.LoadTMX();
 			upMode = UpMode::Play;
 		}
