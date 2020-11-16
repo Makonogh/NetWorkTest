@@ -50,8 +50,7 @@ uniqueScene LoginScene::Update(uniqueScene own)
 
 void LoginScene::Draw(void)
 {
-	MakeScreen(700,600);
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 	DrawGraph(0,0,Image,true);
 	/*ScreenFlip();*/
@@ -141,9 +140,8 @@ bool LoginScene::StartInit(void)
 	{
 		if (lpNetWork.GetNetWorkMode() == NetWorkMode::HOST)
 		{
-			
 			lpNetWork.SendStanby();
-			TRACE("初期化情報送信済み\nスタート信号待ち")
+			TRACE("初期化情報送信済み\nスタート信号待ち");
 		}
 		else
 		{

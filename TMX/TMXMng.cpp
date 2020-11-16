@@ -44,6 +44,11 @@ bool TMXMng::LoadTSX(void)
 bool TMXMng::SendMapData(void)
 {
 	MesPacket expData;
+	expData.emplace_back(unionData{ CSV_.size() });
+
+	lpNetWork.SendMes(MesType::TMX_SIZE,expData);
+	
+	expData.clear();
 	for (auto x:CSV_)
 	{
 		expData.emplace_back(unionData{ x });

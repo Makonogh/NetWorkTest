@@ -68,7 +68,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
 			NetWorkSend(hand, &data, data.size() * sizeof(data));
-			data.erase(data.begin() + 2);
+			data.erase(data.begin() + 2,data.end());
 		}
 		else
 		{
@@ -80,7 +80,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 			NetWorkSend(hand, &data, intSendCount_);
 			data.erase(data.begin() + 2,data.begin() + 2 + (intSendCount_ / 4));
 		}
-	} while (data.size() <= 2);
+	} while (data.size() > 2);
 }
 
 void NetWork::SendMes(MesType type)
@@ -127,6 +127,7 @@ void NetWork::SendStanby()
 	*/
 	start = std::chrono::system_clock::now();
 
+	lpTMXMng.SendMapData();
 	/*auto id = 0;*/
 	//for (auto s = size;s -= 250;s <= 0)
 	//{
@@ -249,7 +250,7 @@ void NetWork::SendStart()
 	MesHeader data;
 	data.type = MesType::GAMESTART;
 	NetWorkSend(hand, &data, sizeof(data));
-	TRACE("スタート信号送信")
+	TRACE("スタート信号送信");
 	state_->SetActive(ActiveState::Play);
 }
 

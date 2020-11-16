@@ -62,12 +62,10 @@ void GameScene::Draw()
 			}
 		}
 	}
-
 	for (auto data : ObjList_)
 	{
 		data->Draw(TileSet_);
 	}
-
 	for (auto data : CharList_)
 	{
 		data->Draw();

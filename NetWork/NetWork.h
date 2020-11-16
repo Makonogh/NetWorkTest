@@ -57,13 +57,14 @@ public:
 	void SendMes(MesType type,MesPacket data);
 	void SendMes(MesType type);
 	int GetHandle(void);
-	std::array<IPDATA, 2> GetIp(void);
 	bool Update();
 	bool CloseNetWork(void);
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
 	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関
+
+	std::array<IPDATA, 2> GetIp(void);
 private:
 	void SortMes(Header& header,MesPacket& data);
 	

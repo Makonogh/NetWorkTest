@@ -29,12 +29,12 @@ public:
 	int GetnetHandle(void);
 	virtual ActiveState ConnectHost(IPDATA hostIP);
 	virtual bool Update(void);
-	bool SetActive(ActiveState active);
+	bool SetActive(ActiveState active);		// 状態変更する
 	bool CloseNetWork(void);
 private:
-	virtual bool CheckNetWork(void) { return false; };
+	virtual bool CheckNetWork(void) { return false; };	
 protected:
- 	const int portNum_ = 8086;
-	ActiveState active_;
-	int netHandle_ = 0;
+ 	const int portNum_ = 8086;				// ポートナンバー
+	ActiveState active_;					// アクティブ
+	int netHandle_ = 0;						// ネットハンドル格納
 };
