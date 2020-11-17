@@ -29,7 +29,6 @@ GameScene::GameScene()
 			}
 		}
 	}
-
 	screenID_ = MakeScreen(32 * 21 , 32 * 17,true);
 }
 

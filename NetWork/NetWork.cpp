@@ -64,16 +64,17 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 		if (intSendCount_ >= data.size() * 4)
 		{
 			header.mesHeader.next = 0;
-			header.mesHeader.length = data.size();
+			header.mesHeader.length = data.size() - 2;
+			header.mesHeader.sendID = 0;
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, &data, data.size() * sizeof(data));
+			NetWorkSend(hand, &data, data.size() * sizeof(int));
 			data.erase(data.begin() + 2,data.end());
 		}
 		else
 		{
 			header.mesHeader.next = 1;
-			header.mesHeader.length = intSendCount_ / 4;
+			header.mesHeader.length = intSendCount_ / 4 - 2;
 			header.mesHeader.sendID = id;
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
@@ -129,6 +130,7 @@ void NetWork::SendStanby()
 
 	lpTMXMng.SendMapData();
 	/*auto id = 0;*/
+
 	//for (auto s = size;s -= 250;s <= 0)
 	//{
 	//	header = { MesType::TMX_DATA,0,0,size };
