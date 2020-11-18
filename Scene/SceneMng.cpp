@@ -18,6 +18,7 @@ void SceneMng::Run(void)
 
 SceneMng::SceneMng()
 {
+	SetDoubleStartValidFlag(TRUE);
 	Init();
 }
 

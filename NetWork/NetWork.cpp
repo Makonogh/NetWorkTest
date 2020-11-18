@@ -258,11 +258,16 @@ void NetWork::SendStart()
 
 bool NetWork::GetRevStanby(void)
 {
+	MesHeader data;
+
 	auto hand = state_->GetnetHandle();
 
+	GetNetWorkDataLength(hand);
+	NetWorkRecv(hand, &data, sizeof(MesHeader));
+	TRACE("ŽóM");
 	//while (GetNetWorkDataLength(hand) >= sizeof(data))
 	//{
-	//	NetWorkRecv(hand, &data, sizeof(data));
+	//	
 	//	if (data.type == MesType::TMX_SIZE)
 	//	{
 	//		start = std::chrono::system_clock::now();

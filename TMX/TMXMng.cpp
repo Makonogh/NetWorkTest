@@ -48,6 +48,7 @@ bool TMXMng::SendMapData(void)
 	data.cData[0] = 21;
 	data.cData[1] = 17;
 	data.cData[2] = 4;
+	data.cData[3] = 0;
 
 	expData.emplace_back(data);
 

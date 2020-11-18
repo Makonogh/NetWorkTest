@@ -69,6 +69,7 @@ bool LoginScene::SetNetWork(void)
 		if (mode == 0)
 		{
 			lpNetWork.SetNetWorkMode(NetWorkMode::HOST);
+			lpTMXMng.LoadTMX();
 			upMode = UpMode::StartInit;
 		}
 		else if (mode == 1)
@@ -91,7 +92,6 @@ bool LoginScene::SetNetWork(void)
 	switch (lpNetWork.GetNetWorkMode())
 	{
 	case NetWorkMode::HOST:
-		lpTMXMng.LoadTMX();
 		std::cout << "ホストモード\nです";
 		break;
 	case NetWorkMode::GUEST:
