@@ -40,7 +40,7 @@ uniqueScene GameScene::Update(uniqueScene own)
 {
 	for (auto data : CharList_)
 	{
-		data->Update();
+		/*data->Update();*/
 	}
 	Draw();
 	return own;

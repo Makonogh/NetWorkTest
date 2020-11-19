@@ -167,7 +167,6 @@
   <ItemGroup>
     <ClInclude Include="common\details\Vector2.h" />
     <ClInclude Include="common\Vector2.h" />
-    <ClInclude Include="Obj\Char.h" />
     <ClInclude Include="input\Controller.h" />
     <ClInclude Include="input\GamePad.h" />
     <ClInclude Include="input\InputID.h" />
@@ -176,6 +175,7 @@
     <ClInclude Include="NetWork\HostState.h" />
     <ClInclude Include="NetWork\NetWorkState.h" />
     <ClInclude Include="NetWork\NetWork.h" />
+    <ClInclude Include="Obj\Char.h" />
     <ClInclude Include="Obj\Obj.h" />
     <ClInclude Include="Parse\rapidxml.hpp" />
     <ClInclude Include="Parse\rapidxml_iterators.hpp" />

@@ -16,7 +16,10 @@ enum class  MesType : unsigned char
 	GAMESTART,
 	TMX_SIZE,
 	TMX_DATA,
-	POS						// パケットの種類データ
+	POS,
+	SET_BOMB,
+	MAX
+	/// パケットの種類データ
 };
 
 struct MesHeader			// 計8バイト
@@ -62,7 +65,7 @@ public:
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
-	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関
+	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関数
 
 	std::array<IPDATA, 2> GetIp(void);
 private:
@@ -76,6 +79,7 @@ private:
 	std::vector<int> MapData_;
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
+	std::pair<MesType, MesPacket> MesData_;
 	
 	NetWork();
 	~NetWork();

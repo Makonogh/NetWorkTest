@@ -57,18 +57,17 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 	auto hand = state_->GetnetHandle();		// ネットワークハンドルを取得
 	short id = 0;							// 分割時のナンバリングカウント
 	header.mesHeader.type = mesType;
-
-	data.emplace(data.begin(), unionData{ header.intHeader[1]});
-	data.emplace(data.begin(), unionData{ header.intHeader[0]});
+	data.emplace(data.begin(), unionData{header.intHeader[1]});
+	data.emplace(data.begin(), unionData{header.intHeader[0]});
 	do {
 		if (intSendCount_ >= data.size() * 4)
 		{
 			header.mesHeader.next = 0;
 			header.mesHeader.length = data.size() - 2;
-			header.mesHeader.sendID = 0;
+			header.mesHeader.sendID = id;
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, &data, data.size() * sizeof(int));
+			NetWorkSend(hand, &data, data.size() * sizeof(unionData));
 			data.erase(data.begin() + 2,data.end());
 		}
 		else
@@ -248,23 +247,26 @@ void NetWork::SendStanby()
 
 void NetWork::SendStart()
 {
-	auto hand = state_->GetnetHandle();
-	MesHeader data;
-	data.type = MesType::GAMESTART;
-	NetWorkSend(hand, &data, sizeof(data));
-	TRACE("スタート信号送信");
-	state_->SetActive(ActiveState::Play);
+	//auto hand = state_->GetnetHandle();
+	//MesHeader data;
+	//data.type = MesType::GAMESTART;
+	//NetWorkSend(hand, &data, sizeof(data));
+	//TRACE("スタート信号送信");
+	//state_->SetActive(ActiveState::Play);
 }
 
 bool NetWork::GetRevStanby(void)
 {
-	MesHeader data;
+	Header header;
 
 	auto hand = state_->GetnetHandle();
 
-	GetNetWorkDataLength(hand);
-	NetWorkRecv(hand, &data, sizeof(MesHeader));
-	TRACE("受信");
+	auto b = GetNetWorkDataLength(hand);
+	if (b > 4)
+	{
+		NetWorkRecv(hand, &header, sizeof(header));
+		TRACE("受信");
+	}
 	//while (GetNetWorkDataLength(hand) >= sizeof(data))
 	//{
 	//	
@@ -304,7 +306,7 @@ bool NetWork::GetRevStanby(void)
 	//		return true;
 	//	}
 	//}
-	return false;
+	return true;
 }
 
 //void NetWork::SendMes(MesPacket& data)
