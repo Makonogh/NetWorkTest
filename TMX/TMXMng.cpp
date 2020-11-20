@@ -54,15 +54,15 @@ bool TMXMng::SendMapData(void)
 
 	lpNetWork.SendMes(MesType::TMX_SIZE,expData);
 	
-	//expData.clear();
-	//for (auto x:CSV_)
-	//{
-	//	expData.emplace_back();
-	//}
+	expData.clear();
+	for (auto x:CSV_)
+	{
+		expData.emplace_back();
+	}
 
-	//lpNetWork.SendMes(MesType::TMX_DATA,expData);
+	lpNetWork.SendMes(MesType::TMX_DATA,expData);
 
-	//lpNetWork.SendMes(MesType::STANBY);
+	lpNetWork.SendMes(MesType::STANBY);
 	return false;
 }
 

@@ -67,7 +67,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 			header.mesHeader.sendID = id;
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, &data, data.size() * sizeof(unionData));
+			NetWorkSend(hand, data.data(), data.size() * sizeof(unionData));
 			data.erase(data.begin() + 2,data.end());
 		}
 		else
@@ -77,7 +77,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data)
 			header.mesHeader.sendID = id;
 			data[0] = { header.intHeader[0] };
 			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, &data, intSendCount_);
+			NetWorkSend(hand, data.data(), intSendCount_);
 			data.erase(data.begin() + 2,data.begin() + 2 + (intSendCount_ / 4));
 		}
 	} while (data.size() > 2);
@@ -261,7 +261,7 @@ bool NetWork::GetRevStanby(void)
 
 	auto hand = state_->GetnetHandle();
 
-	auto b = GetNetWorkDataLength(hand);
+ 	auto b = GetNetWorkDataLength(hand);
 	if (b > 4)
 	{
 		NetWorkRecv(hand, &header, sizeof(header));
