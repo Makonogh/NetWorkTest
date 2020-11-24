@@ -8,6 +8,7 @@ GameScene::GameScene()
 	//画像の読み込み関係
 
 	LoadDivGraph("image/map.png", 12, 4, 3, 32, 32, TileSet_);
+	LoadDivGraph("image/fire.png", 12, 3, 4, 32, 32, FireSet_);
 
 	// マップデータの取得
 	mapData_ = lpTMXMng.GetMapData();
@@ -36,6 +37,10 @@ GameScene::~GameScene()
 {
 }
 
+void GameScene::SetBomb()
+{
+}
+
 uniqueScene GameScene::Update(uniqueScene own)
 {
 	for (auto data : CharList_)
@@ -61,6 +66,18 @@ void GameScene::Draw()
 			}
 		}
 	}
+
+	for (int y = 0; y < 17; y++)
+	{
+		for (int x = 0; x < 21; x++)
+		{
+			if (mapData_[LAYER::BOMB][y * 21 + x] > 0)
+			{
+				DrawGraph(x * 32, y * 32, FireSet_[mapData_[LAYER::BOMB][y * 21 + x]], true);
+			}
+		}
+	}
+
 	for (auto data : ObjList_)
 	{
 		data->Draw(TileSet_);
@@ -69,4 +86,10 @@ void GameScene::Draw()
 	{
 		data->Draw();
 	}
+}
+
+std::vector<int>& GameScene::GetMapData_(LAYER layer)
+{
+	return mapData_[layer];
+	// TODO: return ステートメントをここに挿入します
 }

@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Obj\Generator.cpp" />
+    <ClCompile Include="Obj\Bomb.cpp" />
     <ClCompile Include="Obj\Char.cpp" />
     <ClCompile Include="input\GamePad.cpp" />
     <ClCompile Include="input\KeyInput.cpp" />
@@ -167,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="common\details\Vector2.h" />
     <ClInclude Include="common\Vector2.h" />
+    <ClInclude Include="Obj\Generator.h" />
     <ClInclude Include="input\Controller.h" />
     <ClInclude Include="input\GamePad.h" />
     <ClInclude Include="input\InputID.h" />
@@ -175,6 +178,7 @@
     <ClInclude Include="NetWork\HostState.h" />
     <ClInclude Include="NetWork\NetWorkState.h" />
     <ClInclude Include="NetWork\NetWork.h" />
+    <ClInclude Include="Obj\Bomb.h" />
     <ClInclude Include="Obj\Char.h" />
     <ClInclude Include="Obj\Obj.h" />
     <ClInclude Include="Parse\rapidxml.hpp" />

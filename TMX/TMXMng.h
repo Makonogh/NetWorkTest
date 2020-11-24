@@ -11,10 +11,12 @@
 
 enum class LAYER
 {
-	BG,
-	ITEM,
-	OBJ,
-	CHAR
+	BG,						// 背景
+	ITEM,					// アイテム
+	OBJ,					// オブジェクト（壊せる壁とか）
+	CHAR,					// キャラの座標
+	MAX,					// ボムに関してはデータとしてはTMXに持たせるけど読み込みしないためここでMAX
+	BOMB					// 爆弾の設置された情報を扱うレイヤー。TMXでは読みこまないゲームシーンで追加や削除行う。
 };
 
 class TMXMng
