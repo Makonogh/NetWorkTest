@@ -12,7 +12,8 @@ TMXMng::TMXMng()
 	LayerMap_[LAYER::BG].resize(21 * 17);
 	LayerMap_[LAYER::ITEM].resize(21 * 17);
 	LayerMap_[LAYER::OBJ].resize(21 * 17);
-	LayerMap_[LAYER::CHAR].resize(21 * 17);
+	LayerMap_[LAYER::CHAR].resize(21 * 17);	
+	LayerMap_[LAYER::BOMB].resize(21 * 17);
 }
 
 TMXMng::~TMXMng()

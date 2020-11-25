@@ -224,6 +224,5 @@ bool LoginScene::Play(void)
 	//default:
 	//	std::cout << "ˆÙí”­¶\n";
 	//	break;
-	//}
-	
+	//}	
 }

@@ -21,6 +21,7 @@ public:
 	GameScene();
 	~GameScene();
 	void SetBomb();													// 爆弾の設置（Charクラスが呼ぶ）
+	void SetGene();
 	uniqueScene Update(uniqueScene own) override;					// アップデート
 	void Draw() override;											// 画像描画(Objからの継承)
 	std::vector<int>& GetMapData_(LAYER layer);

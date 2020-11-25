@@ -41,6 +41,10 @@ void GameScene::SetBomb()
 {
 }
 
+void GameScene::SetGene()
+{
+}
+
 uniqueScene GameScene::Update(uniqueScene own)
 {
 	for (auto data : CharList_)
@@ -77,7 +81,7 @@ void GameScene::Draw()
 			}
 		}
 	}
-
+	
 	for (auto data : ObjList_)
 	{
 		data->Draw(TileSet_);
