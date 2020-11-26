@@ -155,7 +155,7 @@ Vector2Temple<T> operator-(const Vector2Temple<T>& v, T k)
 template <class T>
 Vector2Temple<T> operator*(const Vector2Temple<T>& v, T k)
 {
-	Vector2Temple vec;
+	Vector2Temple<T> vec;
 	vec.x = v.x * k;
 	vec.y = v.y * k;
 

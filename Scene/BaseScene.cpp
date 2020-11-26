@@ -2,6 +2,7 @@
 
 BaseScene::BaseScene()
 {
+	screenID_ = NULL;
 	SceneCount = 0;
 }
 
