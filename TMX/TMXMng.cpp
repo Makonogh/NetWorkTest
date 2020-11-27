@@ -28,7 +28,7 @@ std::map<LAYER, std::vector<int>> TMXMng::GetMapData()
 bool TMXMng::LoadTMX()
 {
 	rapidxml::xml_document<> doc;		// XmlÇì«Ç›çûÇﬁDom
-	rapidxml::file<> file("image/test.tmx");
+	rapidxml::file<> file("image/mapBomb.tmx");
 	doc.parse<0>(file.data());
 	rapidxml::xml_node<>* node = doc.first_node("map");
 	LoadMapData(node);

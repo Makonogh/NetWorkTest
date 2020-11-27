@@ -9,7 +9,7 @@ GameScene::GameScene()
 	//画像の読み込み関係
 
 	LoadDivGraph("image/map.png", 12, 4, 3, 32, 32, TileSet_);
-	LoadDivGraph("image/fire.png", 12, 3, 4, 32, 32, FireSet_);
+	LoadDivGraph("image/fireTest.png", 12, 3, 4, 32, 32, FireSet_);
 
 	// マップデータの取得
 	mapData_ = lpTMXMng.GetMapData();
