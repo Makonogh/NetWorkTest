@@ -12,13 +12,17 @@
 enum class  MesType : unsigned char
 {
 	NON = 100,
+	COUNT_DOWN,			// 接続受付カウントダウン
+	ID,					// 自分のIDとプレイヤー総数
 	STANBY,				// 準備完了
 	GAMESTART,			// スタート信号
+	START_TIME,			// 全員の初期化完了後のゲーム開始時間
 	TMX_SIZE,			// CSVのサイズ
 	TMX_DATA,			// TMXデータのCSV
 	POS,				// ゲーム中のデータ
 	SET_BOMB,			// ボムの設置 
 	DETH,				// 死亡 キャラのID付与
+	LOST,				// 切断時に生成
 	MAX
 	/// パケットの種類データ
 };

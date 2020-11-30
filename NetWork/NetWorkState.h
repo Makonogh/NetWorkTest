@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <list>
 
 enum class NetWorkMode
 {
@@ -19,6 +20,9 @@ enum class ActiveState
 	Play,			// ゲームプレイ中
 	OFFLINE
 };
+
+using ListInt = std::list<std::pair<int,unsigned int>>;
+
 class NetWorkState
 {
 public:
@@ -37,4 +41,5 @@ protected:
  	const int portNum_ = 8086;				// ポートナンバー
 	ActiveState active_;					// アクティブ
 	int netHandle_ = 0;						// ネットハンドル格納
+	ListInt playerlist_;
 };
