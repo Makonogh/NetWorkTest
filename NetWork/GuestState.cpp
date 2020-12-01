@@ -18,6 +18,5 @@ ActiveState GuestState::ConnectHost(IPDATA hostIP)
 		playerlist_.push_back({ 0,netHandle_ });
 		active_ = ActiveState::Init;
 	}
-
 	return active_;
 }

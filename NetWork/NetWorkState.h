@@ -21,7 +21,7 @@ enum class ActiveState
 	OFFLINE
 };
 
-using ListInt = std::list<std::pair<int,unsigned int>>;
+using ListInt = std::list<std::pair<int,unsigned int>>;				// ネットワークハンドル,キャラ
 
 class NetWorkState
 {

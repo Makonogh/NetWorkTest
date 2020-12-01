@@ -63,7 +63,7 @@ bool TMXMng::SendMapData(void)
 
 	lpNetWork.SendMes(MesType::TMX_DATA,expData);
 
-	lpNetWork.SendMes(MesType::STANBY);
+	lpNetWork.SendMes(MesType::STANBY_HOST);
 	return false;
 }
 

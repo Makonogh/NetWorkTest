@@ -7,6 +7,8 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <chrono>
+#include <ctime>
 
 bool NetWork::SetNetWorkMode(NetWorkMode mode)
 {
@@ -258,13 +260,17 @@ void NetWork::SendStart()
 bool NetWork::GetRevStanby(void)
 {
 	Header header;
-
+	LONGLONG data;
 	auto hand = state_->GetnetHandle();
 
  	auto b = GetNetWorkDataLength(hand);
 	if (b > 4)
 	{
 		NetWorkRecv(hand, &header, sizeof(header));
+		TRACE("受信");
+		NetWorkRecv(hand, &data, header.mesHeader.length * sizeof(int));
+		std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+
 		TRACE("受信");
 	}
 	//while (GetNetWorkDataLength(hand) >= sizeof(data))
@@ -309,6 +315,20 @@ bool NetWork::GetRevStanby(void)
 	return true;
 }
 
+void NetWork::RevUpdate(void)
+{
+	Header header;
+
+	auto hand = state_->GetnetHandle();
+
+	auto b = GetNetWorkDataLength(hand);
+	if (b > 4)
+	{
+		NetWorkRecv(hand, &header, sizeof(header));
+		TRACE("受信");
+	}
+}
+
 //void NetWork::SendMes(MesPacket& data)
 //{
 //	auto hand = state_->GetnetHandle();
@@ -329,7 +349,7 @@ void NetWork::GetRevStart(void)
 
 	NetWorkRecv(hand, &data, sizeof(data));
 
-	if (data.type == MesType::GAMESTART)
+	if (data.type == MesType::STANBY_GUEST)
 	{
 		TRACE("スタート信号受信");
 		state_ -> SetActive(ActiveState::Play);

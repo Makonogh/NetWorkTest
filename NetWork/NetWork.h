@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <chrono>
+#include <functional>
 
 #define lpNetWork NetWork::GetInstance()
 
@@ -12,11 +13,11 @@
 enum class  MesType : unsigned char
 {
 	NON = 100,
-	COUNT_DOWN,			// 接続受付カウントダウン
+	COUNT_DOWN_ROOM,	// 接続受付カウントダウン
 	ID,					// 自分のIDとプレイヤー総数
-	STANBY,				// 準備完了
-	GAMESTART,			// スタート信号
-	START_TIME,			// 全員の初期化完了後のゲーム開始時間
+	STANBY_HOST,		// 準備完了(ホスト用)
+	STANBY_GUEST,		// 準備完了(ゲスト用)
+	COUNT_DOWN_GAME,	// 全員の初期化完了後のゲーム開始時間
 	TMX_SIZE,			// CSVのサイズ
 	TMX_DATA,			// TMXデータのCSV
 	POS,				// ゲーム中のデータ
@@ -71,17 +72,18 @@ public:
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
 	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関数
-
+	void RevUpdate(void);
 	std::array<IPDATA, 2> GetIp(void);
+	
 private:
 	void SortMes(Header& header,MesPacket& data);
-	
 	unsigned int intSendCount_;			// 送信バイト長(iniファイルのsetting.txtからの読み込み)
 
 	std::vector<int> RevTMX_;			
 	std::array<IPDATA, 2> arrayIP_;
  	std::unique_ptr<NetWorkState> state_;
 	std::vector<int> MapData_;
+	std::map<MesType, std::function<bool()>> revFunc_;
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
 	std::pair<MesType, MesPacket> MesData_;
