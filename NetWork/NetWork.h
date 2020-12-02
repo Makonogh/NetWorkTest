@@ -63,30 +63,28 @@ public:
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	ActiveState ConnectHost(IPDATA hostIP);
-	void SendMes(MesType type,MesPacket data);
-	void SendMes(MesType type);
-	int GetHandle(void);
+	void SendMes(MesType type,MesPacket data);		// データを送る(タイプとデータ部がある)
+	void SendMes(MesType type);						// データを送る(タイプだけ)
 	bool Update();
-	bool CloseNetWork(void);
+	bool CloseNetWork(void);			
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	void GetRevStart(void);				// ホストがゲストのスタートを受け取る関数
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
 	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関数
-	void RevUpdate(void);
-	std::array<IPDATA, 2> GetIp(void);
-	
+	void RevUpdate(void);				// データを受け取りrevDataに適切なキーで格納する関数
+	std::array<IPDATA, 2> GetIp(void);	
 private:
-	void SortMes(Header& header,MesPacket& data);
 	unsigned int intSendCount_;			// 送信バイト長(iniファイルのsetting.txtからの読み込み)
 
 	std::vector<int> RevTMX_;			
 	std::array<IPDATA, 2> arrayIP_;
  	std::unique_ptr<NetWorkState> state_;
 	std::vector<int> MapData_;
-	std::map<MesType, std::function<bool()>> revFunc_;
+	std::map < MesType, std::function<bool()>> revFunc_;				// 関数ポインタ
+	std::map < MesType, std::vector<int> > revData_;					// 受け取ったデータを保存
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
-	std::pair<MesType, MesPacket> MesData_;
+	std::pair<MesType, MesPacket> MesData_;								
 	
 	NetWork();
 	~NetWork();

@@ -91,11 +91,6 @@ void NetWork::SendMes(MesType type)
 	SendMes(type, expData);
 }
 
-int NetWork::GetHandle(void)
-{
-	return state_->GetnetHandle();
-}
-
 
 std::array<IPDATA, 2> NetWork::GetIp(void)
 {
@@ -261,7 +256,7 @@ bool NetWork::GetRevStanby(void)
 {
 	Header header;
 	LONGLONG data;
-	auto hand = state_->GetnetHandle();
+
 
  	auto b = GetNetWorkDataLength(hand);
 	if (b > 4)
@@ -318,14 +313,17 @@ bool NetWork::GetRevStanby(void)
 void NetWork::RevUpdate(void)
 {
 	Header header;
+	
+	
 
-	auto hand = state_->GetnetHandle();
-
-	auto b = GetNetWorkDataLength(hand);
-	if (b > 4)
+	for (auto data : state_->GetPlayerList())
 	{
-		NetWorkRecv(hand, &header, sizeof(header));
-		TRACE("óM");
+		auto b = GetNetWorkDataLength(data.NWHandle);
+		if (b > 4)
+		{
+			NetWorkRecv(data.NWHandle, &header, sizeof(header));
+			TRACE("óM");
+		}
 	}
 }
 
@@ -335,12 +333,6 @@ void NetWork::RevUpdate(void)
 //
 //	NetWorkSend(hand, data.data(), data.size() * sizeof(int));
 //}
-
-void NetWork::SortMes(Header& header, MesPacket& data)
-{
-	data.insert(data.begin(), { header.intHeader[1] });
-	data.insert(data.begin(), { header.intHeader[0] });
-}
 
 void NetWork::GetRevStart(void)
 {

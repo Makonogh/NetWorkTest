@@ -12,7 +12,7 @@ GuestState::~GuestState()
 
 ActiveState GuestState::ConnectHost(IPDATA hostIP)
 {
-	netHandle_ = ConnectNetWork(hostIP,portNum_);
+	auto netHandle_ = ConnectNetWork(hostIP,portNum_);
 	if (netHandle_ != -1)
 	{
 		playerlist_.push_back({ 0,netHandle_ });

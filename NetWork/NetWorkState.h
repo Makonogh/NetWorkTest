@@ -21,7 +21,14 @@ enum class ActiveState
 	OFFLINE
 };
 
-using ListInt = std::list<std::pair<int,unsigned int>>;				// ネットワークハンドル,キャラ
+struct PlayerBundle
+{
+	int NWHandle;			// ネットワークのハンドル
+	unsigned int CharID;	// 1～プレイヤー総数
+	bool Connect;			// 接続されたかどうか(GuestStanbyが来たらtrue,こなかったらfalse)
+};
+
+using ListInt = std::list<PlayerBundle>;				// ネットワークハンドル,キャラ
 
 class NetWorkState
 {
@@ -30,16 +37,15 @@ public:
 	virtual ~NetWorkState();
 	virtual NetWorkMode GetMode(void) { return NetWorkMode::OFFLINE; };
 	ActiveState GetActive_(void);
-	int GetnetHandle(void);
 	virtual ActiveState ConnectHost(IPDATA hostIP);
 	virtual bool Update(void);
 	bool SetActive(ActiveState active);		// 状態変更する
 	bool CloseNetWork(void);
+	ListInt GetPlayerList();
 private:
 	virtual bool CheckNetWork(void) { return false; };	
 protected:
  	const int portNum_ = 8086;				// ポートナンバー
 	ActiveState active_;					// アクティブ
-	int netHandle_ = 0;						// ネットハンドル格納
 	ListInt playerlist_;
 };

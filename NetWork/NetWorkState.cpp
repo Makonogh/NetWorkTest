@@ -15,11 +15,6 @@ ActiveState NetWorkState::GetActive_(void)
 	return active_;
 }
 
-int NetWorkState::GetnetHandle(void)
-{
-	return netHandle_;
-}
-
 ActiveState NetWorkState::ConnectHost(IPDATA hostIP)
 {
 	return active_;
@@ -39,4 +34,9 @@ bool NetWorkState::SetActive(ActiveState active)
 bool NetWorkState::CloseNetWork(void)
 {
 	return false;
+}
+
+ListInt NetWorkState::GetPlayerList()
+{
+	return playerlist_;
 }
