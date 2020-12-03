@@ -15,7 +15,8 @@ ActiveState GuestState::ConnectHost(IPDATA hostIP)
 	auto netHandle_ = ConnectNetWork(hostIP,portNum_);
 	if (netHandle_ != -1)
 	{
-		playerlist_.push_back({ 0,netHandle_ });
+		PlayerBundle player = { netHandle_,0,false };
+		playerlist_.emplace_back(player);
 		active_ = ActiveState::Init;
 	}
 	return active_;

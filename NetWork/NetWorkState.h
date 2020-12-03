@@ -24,7 +24,7 @@ enum class ActiveState
 struct PlayerBundle
 {
 	int NWHandle;			// ネットワークのハンドル
-	unsigned int CharID;	// 1～プレイヤー総数
+	unsigned int CharID;	// 0～プレイヤー総数
 	bool Connect;			// 接続されたかどうか(GuestStanbyが来たらtrue,こなかったらfalse)
 };
 
@@ -41,7 +41,7 @@ public:
 	virtual bool Update(void);
 	bool SetActive(ActiveState active);		// 状態変更する
 	bool CloseNetWork(void);
-	ListInt GetPlayerList();
+	ListInt& GetPlayerList(void);
 private:
 	virtual bool CheckNetWork(void) { return false; };	
 protected:

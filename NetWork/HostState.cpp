@@ -15,7 +15,7 @@ bool HostState::Update(void)
 {
 	if (active_ == ActiveState::Wait)
 	{
-		netHandle_ = GetNewAcceptNetWork();
+		auto netHandle_ = GetNewAcceptNetWork();
 		if (netHandle_ != -1)
 		{
 			/*StopListenNetWork();*/

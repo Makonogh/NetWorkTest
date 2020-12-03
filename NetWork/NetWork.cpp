@@ -9,6 +9,7 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
+#include <thread>
 
 bool NetWork::SetNetWorkMode(NetWorkMode mode)
 {
@@ -17,11 +18,13 @@ bool NetWork::SetNetWorkMode(NetWorkMode mode)
 	if (mode == NetWorkMode::GUEST)
 	{
 		state_ = std::make_unique<GuestState>();
+		Init();
 		return true;
 	}
 	else if (mode == NetWorkMode::HOST)
 	{
 		state_ = std::make_unique<HostState>();
+		Init();
 		return true;
 	}
 	else // ｵﾌﾗｲﾝ
@@ -53,42 +56,87 @@ ActiveState NetWork::ConnectHost(IPDATA hostIP)
 	return  state_->ConnectHost(hostIP);
 }
 
-void NetWork::SendMes(MesType mesType, MesPacket data)
+void NetWork::SendMes(MesType mesType, MesPacket data,int ID)
 {
 	Header header;
-	auto hand = state_->GetnetHandle();		// ネットワークハンドルを取得
-	short id = 0;							// 分割時のナンバリングカウント
-	header.mesHeader.type = mesType;
-	data.emplace(data.begin(), unionData{header.intHeader[1]});
-	data.emplace(data.begin(), unionData{header.intHeader[0]});
-	do {
-		if (intSendCount_ >= data.size() * 4)
+	for (auto &d : state_->GetPlayerList())
+	{
+		if (ID == d.CharID)
 		{
-			header.mesHeader.next = 0;
-			header.mesHeader.length = data.size() - 2;
-			header.mesHeader.sendID = id;
-			data[0] = { header.intHeader[0] };
-			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, data.data(), data.size() * sizeof(unionData));
-			data.erase(data.begin() + 2,data.end());
+			short id = 0;							// 分割時のナンバリングカウント
+			header.mesHeader.type = mesType;
+			data.emplace(data.begin(), unionData{ header.intHeader[1] });
+			data.emplace(data.begin(), unionData{ header.intHeader[0] });
+			do {
+				if (intSendCount_ >= data.size() * 4)
+				{
+					header.mesHeader.next = 0;
+					header.mesHeader.length = data.size() - 2;
+					header.mesHeader.sendID = id;
+					data[0] = { header.intHeader[0] };
+					data[1] = { header.intHeader[1] };
+					NetWorkSend(d.NWHandle, data.data(), data.size() * sizeof(unionData));
+					data.erase(data.begin() + 2, data.end());
+				}
+				else
+				{
+					header.mesHeader.next = 1;
+					header.mesHeader.length = intSendCount_ / 4 - 2;
+					header.mesHeader.sendID = id;
+					data[0] = { header.intHeader[0] };
+					data[1] = { header.intHeader[1] };
+					NetWorkSend(d.NWHandle, data.data(), intSendCount_);
+					data.erase(data.begin() + 2, data.begin() + 2 + (intSendCount_ / 4));
+				}
+			} while (data.size() > 2);
 		}
-		else
-		{
-			header.mesHeader.next = 1;
-			header.mesHeader.length = intSendCount_ / 4 - 2;
-			header.mesHeader.sendID = id;
-			data[0] = { header.intHeader[0] };
-			data[1] = { header.intHeader[1] };
-			NetWorkSend(hand, data.data(), intSendCount_);
-			data.erase(data.begin() + 2,data.begin() + 2 + (intSendCount_ / 4));
-		}
-	} while (data.size() > 2);
+	}
 }
 
-void NetWork::SendMes(MesType type)
+void NetWork::SendMes(MesType type,int ID)
 {
 	MesPacket expData;
-	SendMes(type, expData);
+	SendMes(type, expData,ID);
+}
+
+void NetWork::SendAllMes(MesType mesType, MesPacket data)
+{
+	Header header;
+	for (auto &d : state_->GetPlayerList())
+	{
+		short id = 0;							// 分割時のナンバリングカウント
+		header.mesHeader.type = mesType;
+		data.emplace(data.begin(), unionData{ header.intHeader[1] });
+		data.emplace(data.begin(), unionData{ header.intHeader[0] });
+		do {
+			if (intSendCount_ >= data.size() * 4)
+			{
+				header.mesHeader.next = 0;
+				header.mesHeader.length = data.size() - 2;
+				header.mesHeader.sendID = id;
+				data[0] = { header.intHeader[0] };
+				data[1] = { header.intHeader[1] };
+				NetWorkSend(d.NWHandle, data.data(), data.size() * sizeof(unionData));
+				data.erase(data.begin() + 2, data.end());
+			}
+			else
+			{
+				header.mesHeader.next = 1;
+				header.mesHeader.length = intSendCount_ / 4 - 2;
+				header.mesHeader.sendID = id;
+				data[0] = { header.intHeader[0] };
+				data[1] = { header.intHeader[1] };
+				NetWorkSend(d.NWHandle, data.data(), intSendCount_);
+				data.erase(data.begin() + 2, data.begin() + 2 + (intSendCount_ / 4));
+			}
+		} while (data.size() > 2);
+	}
+}
+
+void NetWork::SendAllMes(MesType type)
+{
+	MesPacket expData;
+	SendAllMes(type, expData);
 }
 
 
@@ -96,6 +144,19 @@ std::array<IPDATA, 2> NetWork::GetIp(void)
 {
 	GetMyIPAddress(&arrayIP_[0],2);
 	return arrayIP_;
+}
+
+void NetWork::Init()
+{
+	revFunc_[MesType::COUNT_DOWN_ROOM] = [&]() { return; };
+	revFunc_[MesType::ID] = [&]() {  return; };
+	revFunc_[MesType::TMX_SIZE] = [&]() { return; };
+	revFunc_[MesType::TMX_DATA] = [&]() {  return; };
+	revFunc_[MesType::STANBY_HOST] = [&]() {SendAllMes(MesType::STANBY_GUEST); };
+
+
+	std::thread th(&NetWork::RevUpdate, this);
+	th.detach();
 }
 
 bool NetWork::Update()
@@ -254,20 +315,19 @@ void NetWork::SendStart()
 
 bool NetWork::GetRevStanby(void)
 {
-	Header header;
-	LONGLONG data;
+	
 
 
- 	auto b = GetNetWorkDataLength(hand);
-	if (b > 4)
-	{
-		NetWorkRecv(hand, &header, sizeof(header));
-		TRACE("受信");
-		NetWorkRecv(hand, &data, header.mesHeader.length * sizeof(int));
-		std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+ 	
+	//if (b > 4)
+	//{
+	//	NetWorkRecv(hand, &header, sizeof(header));
+	//	TRACE("受信");
+	//	NetWorkRecv(hand, &data, header.mesHeader.length * sizeof(int));
+	//	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
 
-		TRACE("受信");
-	}
+	//	TRACE("受信");
+	//}
 	//while (GetNetWorkDataLength(hand) >= sizeof(data))
 	//{
 	//	
@@ -312,40 +372,50 @@ bool NetWork::GetRevStanby(void)
 
 void NetWork::RevUpdate(void)
 {
-	Header header;
-	
-	
-
-	for (auto data : state_->GetPlayerList())
+	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
-		auto b = GetNetWorkDataLength(data.NWHandle);
-		if (b > 4)
+		Header header;
+		std::lock_guard<std::mutex> lock(mtx);
+		for (auto& data : state_->GetPlayerList())
 		{
-			NetWorkRecv(data.NWHandle, &header, sizeof(header));
-			TRACE("受信");
+			if (sizeof(header) <= GetNetWorkDataLength(data.NWHandle))
+			{
+				int writePos = 0;				// データ格納のvectorの書き込み位置
+				NetWorkRecv(data.NWHandle, &header, sizeof(header));
+
+				revData_[header.mesHeader.type].resize(header.mesHeader.length);
+				if (header.mesHeader.length > 0)
+				{
+
+					if (sizeof(unionData) * header.mesHeader.length <= GetNetWorkDataLength(data.NWHandle))
+					{
+						NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length);
+					}
+					writePos = header.mesHeader.length;
+					while (header.mesHeader.next)
+					{
+						if (sizeof(header) <= GetNetWorkDataLength(data.NWHandle))
+						{
+							NetWorkRecv(data.NWHandle, &header, sizeof(header));
+							revData_[header.mesHeader.type].resize(writePos + header.mesHeader.length);
+							if (sizeof(unionData) * header.mesHeader.length <= GetNetWorkDataLength(data.NWHandle))
+							{
+								NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length);
+							}
+						}
+						writePos += header.mesHeader.length;
+					}
+				}
+				revFunc_[header.mesHeader.type]();
+				TRACE("受信");
+			}
 		}
 	}
 }
 
-//void NetWork::SendMes(MesPacket& data)
-//{
-//	auto hand = state_->GetnetHandle();
-//
-//	NetWorkSend(hand, data.data(), data.size() * sizeof(int));
-//}
-
 void NetWork::GetRevStart(void)
 {
-	auto hand = state_->GetnetHandle();
-	MesHeader data;
 
-	NetWorkRecv(hand, &data, sizeof(data));
-
-	if (data.type == MesType::STANBY_GUEST)
-	{
-		TRACE("スタート信号受信");
-		state_ -> SetActive(ActiveState::Play);
-	}
 }
 
 NetWork::NetWork()

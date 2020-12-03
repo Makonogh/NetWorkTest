@@ -53,7 +53,7 @@ bool TMXMng::SendMapData(void)
 
 	expData.emplace_back(data);
 
-	lpNetWork.SendMes(MesType::TMX_SIZE,expData);
+	lpNetWork.SendAllMes(MesType::TMX_SIZE,expData);
 	
 	expData.clear();
 	for (auto x:CSV_)
@@ -61,9 +61,9 @@ bool TMXMng::SendMapData(void)
 		expData.emplace_back();
 	}
 
-	lpNetWork.SendMes(MesType::TMX_DATA,expData);
+	lpNetWork.SendAllMes(MesType::TMX_DATA,expData);
 
-	lpNetWork.SendMes(MesType::STANBY_HOST);
+	lpNetWork.SendAllMes(MesType::STANBY_HOST);
 	return false;
 }
 

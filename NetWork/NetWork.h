@@ -6,6 +6,8 @@
 #include <array>
 #include <chrono>
 #include <functional>
+#include <map>
+#include <mutex>
 
 #define lpNetWork NetWork::GetInstance()
 
@@ -63,8 +65,10 @@ public:
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	ActiveState ConnectHost(IPDATA hostIP);
-	void SendMes(MesType type,MesPacket data);		// データを送る(タイプとデータ部がある)
-	void SendMes(MesType type);						// データを送る(タイプだけ)
+	void SendMes(MesType type,MesPacket data,int ID);	// データを送る(タイプとデータ部がある)
+	void SendMes(MesType type,int ID);					// データを送る(タイプだけ)
+	void SendAllMes(MesType type,MesPacket);			// データを送る(すべてに)
+	void SendAllMes(MesType type);						// データを送る(すべてにデータ部なし)
 	bool Update();
 	bool CloseNetWork(void);			
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
@@ -74,17 +78,19 @@ public:
 	void RevUpdate(void);				// データを受け取りrevDataに適切なキーで格納する関数
 	std::array<IPDATA, 2> GetIp(void);	
 private:
+	void Init();
 	unsigned int intSendCount_;			// 送信バイト長(iniファイルのsetting.txtからの読み込み)
-
+	
 	std::vector<int> RevTMX_;			
 	std::array<IPDATA, 2> arrayIP_;
  	std::unique_ptr<NetWorkState> state_;
 	std::vector<int> MapData_;
-	std::map < MesType, std::function<bool()>> revFunc_;				// 関数ポインタ
-	std::map < MesType, std::vector<int> > revData_;					// 受け取ったデータを保存
+	std::map < MesType, std::function<void(void)>> revFunc_;				// 関数ポインタ
+	std::map < MesType, std::vector<unionData> > revData_;					// 受け取ったデータを保存
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
 	std::pair<MesType, MesPacket> MesData_;								
+	std::mutex mtx;
 	
 	NetWork();
 	~NetWork();

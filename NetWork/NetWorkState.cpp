@@ -36,7 +36,7 @@ bool NetWorkState::CloseNetWork(void)
 	return false;
 }
 
-ListInt NetWorkState::GetPlayerList()
+ListInt& NetWorkState::GetPlayerList()
 {
 	return playerlist_;
 }
