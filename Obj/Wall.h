@@ -3,7 +3,7 @@
 
 enum class COLOR        //壁の色二種類（BLUEが6なのはタイルセットの6番目だから）
 {
-    BLUE = 6,
+    BLUE = 7,
     RED
 };
 

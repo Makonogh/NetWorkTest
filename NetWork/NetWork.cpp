@@ -14,6 +14,7 @@
 bool NetWork::SetNetWorkMode(NetWorkMode mode)
 {
 	MesHeader data;
+	startFlag_ = false;
 	auto b = sizeof(data);
 	if (mode == NetWorkMode::GUEST)
 	{
@@ -140,6 +141,11 @@ void NetWork::SendAllMes(MesType type)
 }
 
 
+std::tuple<unsigned int, unsigned int, unsigned int> NetWork::GetTMXState()
+{
+	return {width,length,layer};
+}
+
 std::array<IPDATA, 2> NetWork::GetIp(void)
 {
 	GetMyIPAddress(&arrayIP_[0],2);
@@ -149,11 +155,32 @@ std::array<IPDATA, 2> NetWork::GetIp(void)
 void NetWork::Init()
 {
 	revFunc_[MesType::COUNT_DOWN_ROOM] = [&]() { return; };
+	
 	revFunc_[MesType::ID] = [&]() {  return; };
-	revFunc_[MesType::TMX_SIZE] = [&]() { return; };
-	revFunc_[MesType::TMX_DATA] = [&]() {  return; };
-	revFunc_[MesType::STANBY_HOST] = [&]() {SendAllMes(MesType::STANBY_GUEST); };
 
+	revFunc_[MesType::TMX_SIZE] = [&]() { 
+		width  = revData_[MesType::TMX_SIZE][0].cData[0];
+		length = revData_[MesType::TMX_SIZE][0].cData[1];
+		layer = revData_[MesType::TMX_SIZE][0].cData[2];
+		revData_.erase(MesType::TMX_SIZE);
+	};
+
+	revFunc_[MesType::TMX_DATA] = [&]() { 
+		lpTMXMng.LoadRevTMX(revData_[MesType::TMX_DATA]);
+		revData_.erase(MesType::TMX_DATA);
+	};
+
+	revFunc_[MesType::STANBY_HOST] = [&]() {startFlag_ = true; };
+
+	revFunc_[MesType::STANBY_GUEST] = [&]() {startFlag_ = true; };
+
+	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
+
+	revFunc_[MesType::POS] = [&]() {};
+	
+	revFunc_[MesType::SET_BOMB] = [&]() {};
+
+	revFunc_[MesType::DETH] = [&]() {};
 
 	std::thread th(&NetWork::RevUpdate, this);
 	th.detach();
@@ -411,6 +438,11 @@ void NetWork::RevUpdate(void)
 			}
 		}
 	}
+}
+
+bool NetWork::GetStartFlag(void)
+{
+	return startFlag_;
 }
 
 void NetWork::GetRevStart(void)

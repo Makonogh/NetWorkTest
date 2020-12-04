@@ -20,12 +20,12 @@ GameScene::GameScene()
 		for (int x = 0; x < 21; x++)
 		{
 			auto data = mapData_[LAYER::OBJ][y * 21 + x];
-			if (data != -1)
+			if (data != 0)
 			{
 				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x,32 * y),static_cast<COLOR>(data)));
 			}
 		
-			if (mapData_[LAYER::CHAR][y * 21 + x] + 1 != 0)
+			if (mapData_[LAYER::CHAR][y * 21 + x] + 1 == 4)
 			{
 				CharList_.emplace_back(std::make_shared <Char>(Vector2(32 * x, 32 * y),*this));
 			}
@@ -76,7 +76,7 @@ void GameScene::Draw()
 		{
 			if (mapData_[LAYER::BG][y * 21 + x] > 0) 
 			{
-				DrawGraph(x * 32, y * 32, TileSet_[mapData_[LAYER::BG][y * 21 + x]], true);
+				DrawGraph(x * 32, y * 32, TileSet_[mapData_[LAYER::BG][y * 21 + x] - 1], true);
 			}
 		}
 	}
@@ -85,7 +85,7 @@ void GameScene::Draw()
 	{
 		for (int x = 0; x < 21; x++)
 		{
-			if (mapData_[LAYER::BOMB][y * 21 + x] > 0)
+			if (mapData_[LAYER::BOMB][y * 21 + x] == 1)
 			{
 				DrawGraph(x * 32, y * 32, FireSet_[mapData_[LAYER::BOMB][y * 21 + x] - 1], true);
 			}
@@ -102,7 +102,7 @@ void GameScene::Draw()
 	}
 }
 
-std::vector<int>& GameScene::GetMapData_(LAYER layer)
+std::vector<unsigned  char>& GameScene::GetMapData_(LAYER layer)
 {
 	return mapData_[layer];
 	// TODO: return ステートメントをここに挿入します

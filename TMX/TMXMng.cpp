@@ -7,20 +7,22 @@
 
 TMXMng::TMXMng()
 {
-	width = 21;
-	length = 17;
-	LayerMap_[LAYER::BG].resize(21 * 17);
-	LayerMap_[LAYER::ITEM].resize(21 * 17);
-	LayerMap_[LAYER::OBJ].resize(21 * 17);
-	LayerMap_[LAYER::CHAR].resize(21 * 17);	
-	LayerMap_[LAYER::BOMB].resize(21 * 17);
+	auto s = lpNetWork.GetTMXState();
+	width = std::get<0>(s);
+	length = std::get<1>(s);
+	layer = std::get<2>(s);
+	LayerMap_[LAYER::BG].resize(width * length);
+	LayerMap_[LAYER::ITEM].resize(width * length);
+	LayerMap_[LAYER::OBJ].resize(width * length);
+	LayerMap_[LAYER::CHAR].resize(width * length);
+	LayerMap_[LAYER::BOMB].resize(width * length);
 }
 
 TMXMng::~TMXMng()
 {
 }
 
-std::map<LAYER, std::vector<int>> TMXMng::GetMapData()
+std::map<LAYER, std::vector<unsigned char>> TMXMng::GetMapData()
 {
 	return LayerMap_;
 }
@@ -65,6 +67,28 @@ bool TMXMng::SendMapData(void)
 
 	lpNetWork.SendAllMes(MesType::STANBY_HOST);
 	return false;
+}
+
+bool TMXMng::LoadRevTMX(std::vector<unionData>& data)
+{
+	int writePos = 0;
+	for (int ly = 0;ly < layer;ly++)
+	{
+		for (int x = 0; x < width * length; x++)
+		{
+			if (writePos % 2 == 0)
+			{
+				(LayerMap_[static_cast<LAYER>(ly)][x] |= data[writePos / 8].ucData[(writePos / 2) % 4] << 4);
+				LayerMap_[static_cast<LAYER>(ly)][x] >>= 4;
+			}
+			else
+			{
+				LayerMap_[static_cast<LAYER>(ly)][x] |= data[writePos / 8].ucData[(writePos / 2) % 4] >> 4;
+			}
+			writePos++;
+		}
+	}
+	return true;
 }
 
 std::pair<int, int> TMXMng::GetMapSize(void)

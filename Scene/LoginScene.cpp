@@ -145,9 +145,10 @@ bool LoginScene::StartInit(void)
 		}
 		else
 		{
-			if (lpNetWork.GetRevStanby())
+			if (lpNetWork.GetStartFlag())
 			{
-				lpNetWork.SendStart();
+				lpNetWork.SendAllMes(MesType::STANBY_GUEST);
+				upMode = UpMode::Play;
 			}
 		}
 	}

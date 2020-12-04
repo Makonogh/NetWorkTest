@@ -8,6 +8,7 @@
 #include <functional>
 #include <map>
 #include <mutex>
+#include <tuple>
 
 #define lpNetWork NetWork::GetInstance()
 
@@ -48,6 +49,7 @@ union unionData
 {
 	unsigned int uData;		// 4バイト
 	char cData[4];          // 1*4バイト
+	unsigned char ucData[4];	// 1*4バイト
 	int iData;			    // 4バイト
 };
 
@@ -76,6 +78,8 @@ public:
 	void SendStart();					// ゲストがホストに初期化完了したことを送る関数
 	bool GetRevStanby(void);			// ゲストがホストの初期化信号を受け取る関数
 	void RevUpdate(void);				// データを受け取りrevDataに適切なキーで格納する関数
+	bool GetStartFlag(void);
+	std::tuple<unsigned int, unsigned int, unsigned int> GetTMXState();		// width,length,layer	
 	std::array<IPDATA, 2> GetIp(void);	
 private:
 	void Init();
@@ -91,6 +95,12 @@ private:
 	std::chrono::system_clock::time_point end;
 	std::pair<MesType, MesPacket> MesData_;								
 	std::mutex mtx;
+
+	unsigned int width;
+	unsigned int length;
+	unsigned int layer;
+
+	bool startFlag_;
 	
 	NetWork();
 	~NetWork();

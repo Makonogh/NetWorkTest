@@ -13,7 +13,7 @@ Generator::Generator(Vector2 tipos, BaseScene& scene):scene_(scene)
 
 void Generator::Update()
 {	
-	std::vector<int> &map = dynamic_cast<GameScene&>(scene_).GetMapData_(LAYER::BOMB);
+	std::vector<unsigned  char> &map = dynamic_cast<GameScene&>(scene_).GetMapData_(LAYER::BOMB);
 	map[tilePos_.x + tilePos_.y * 21] = static_cast<int>(EXP_TYPE::GZ) * 10 + 0;				// 二桁の数を格納　二桁目はexpType 一桁目はアニメーション
 	NowLength_++;
 
