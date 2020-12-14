@@ -1,10 +1,11 @@
 #pragma once
 #include "Obj.h"
 
-enum class COLOR        //壁の色二種類（BLUEが6なのはタイルセットの6番目だから）
+enum class COLOR        //壁の色二種類（BLUEが5なのはタイルセットの5番目だから）
 {
-    BLUE = 7,
-    RED
+    BLUE = 5,
+    RED,
+    BREAK
 };
 
 class Wall :

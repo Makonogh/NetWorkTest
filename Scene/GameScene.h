@@ -33,4 +33,5 @@ private:
 	std::map<UpDate, std::function<bool(void)>> Update_;			// 関数オブジェクト
 	std::list<std::shared_ptr <Obj>> ObjList_;						// オブジェクトを管理するベクター
 	std::list<std::shared_ptr <Obj>> CharList_;						// キャラを管理するベクター
+	std::list<std::shared_ptr <Obj>> ItemList_;						// 
 };

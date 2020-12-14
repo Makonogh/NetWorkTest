@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "../Obj/Char.h"
 #include "../Obj/Wall.h"
+#include "../Obj/Item.h"
 #include "../NetWork/NetWork.h"
 #include "../Obj/Generator.h"
 
@@ -22,10 +23,16 @@ GameScene::GameScene()
 			auto data = mapData_[LAYER::OBJ][y * 21 + x];
 			if (data != 0)
 			{
-				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x,32 * y),static_cast<COLOR>(data)));
+				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x,32 * y),static_cast<COLOR>(data - 1)));
+			}
+			data = NULL;
+			data = mapData_[LAYER::ITEM][y * 21 + x];
+			if (data != 0)
+			{
+				ItemList_.emplace_back(std::make_shared <Item>(Vector2(32 * x, 32 * y), static_cast<ITEM_TYPE>(data - 1)));
 			}
 		
-			if (mapData_[LAYER::CHAR][y * 21 + x] + 1 == 4)
+			if (mapData_[LAYER::CHAR][y * 21 + x] == 4)
 			{
 				CharList_.emplace_back(std::make_shared <Char>(Vector2(32 * x, 32 * y),*this));
 			}
@@ -96,6 +103,12 @@ void GameScene::Draw()
 	{
 		data->Draw(TileSet_);
 	}
+
+	for (auto data : ItemList_)
+	{
+		data->Draw(TileSet_);
+	}
+
 	for (auto data : CharList_)
 	{
 		data->Draw();
@@ -105,5 +118,4 @@ void GameScene::Draw()
 std::vector<unsigned  char>& GameScene::GetMapData_(LAYER layer)
 {
 	return mapData_[layer];
-	// TODO: return ステートメントをここに挿入します
 }

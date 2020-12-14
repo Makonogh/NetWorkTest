@@ -176,7 +176,9 @@ void NetWork::Init()
 
 	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
 
-	revFunc_[MesType::POS] = [&]() {};
+	revFunc_[MesType::POS] = [&]() {
+
+	};
 	
 	revFunc_[MesType::SET_BOMB] = [&]() {};
 
@@ -434,7 +436,6 @@ void NetWork::RevUpdate(void)
 					}
 				}
 				revFunc_[header.mesHeader.type]();
-				TRACE("éÛêM");
 			}
 		}
 	}

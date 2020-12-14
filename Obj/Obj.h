@@ -9,6 +9,7 @@ enum class OBJ_TYPE
 {
 	CHAR,
 	WALL,
+	ITEM,
 	BOMB,
 	GENE,
 	MAX
