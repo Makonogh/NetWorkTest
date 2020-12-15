@@ -13,7 +13,7 @@
 
 bool NetWork::SetNetWorkMode(NetWorkMode mode)
 {
-	MesHeader data;
+	MesHeader data = {};
 	startFlag_ = false;
 	auto b = sizeof(data);
 	if (mode == NetWorkMode::GUEST)
@@ -29,7 +29,7 @@ bool NetWork::SetNetWorkMode(NetWorkMode mode)
 		return true;
 	}
 	else // ｵﾌﾗｲﾝ
-	{	
+	{
 		if (mode != NetWorkMode::OFFLINE)
 		{
 			//異常検出（例外）
@@ -57,10 +57,10 @@ ActiveState NetWork::ConnectHost(IPDATA hostIP)
 	return  state_->ConnectHost(hostIP);
 }
 
-void NetWork::SendMes(MesType mesType, MesPacket data,int ID)
+void NetWork::SendMes(MesType mesType, MesPacket data, int ID)
 {
-	Header header;
-	for (auto &d : state_->GetPlayerList())
+	Header header = {};
+	for (auto& d : state_->GetPlayerList())
 	{
 		if (ID == d.CharID)
 		{
@@ -72,7 +72,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data,int ID)
 				if (intSendCount_ >= data.size() * 4)
 				{
 					header.mesHeader.next = 0;
-					header.mesHeader.length = data.size() - 2;
+					header.mesHeader.length_ = data.size() - 2;
 					header.mesHeader.sendID = id;
 					data[0] = { header.intHeader[0] };
 					data[1] = { header.intHeader[1] };
@@ -82,7 +82,7 @@ void NetWork::SendMes(MesType mesType, MesPacket data,int ID)
 				else
 				{
 					header.mesHeader.next = 1;
-					header.mesHeader.length = intSendCount_ / 4 - 2;
+					header.mesHeader.length_ = intSendCount_ / 4 - 2;
 					header.mesHeader.sendID = id;
 					data[0] = { header.intHeader[0] };
 					data[1] = { header.intHeader[1] };
@@ -94,16 +94,16 @@ void NetWork::SendMes(MesType mesType, MesPacket data,int ID)
 	}
 }
 
-void NetWork::SendMes(MesType type,int ID)
+void NetWork::SendMes(MesType type, int ID)
 {
 	MesPacket expData;
-	SendMes(type, expData,ID);
+	SendMes(type, expData, ID);
 }
 
 void NetWork::SendAllMes(MesType mesType, MesPacket data)
 {
-	Header header;
-	for (auto &d : state_->GetPlayerList())
+	Header header = {};
+	for (auto& d : state_->GetPlayerList())
 	{
 		short id = 0;							// 分割時のナンバリングカウント
 		header.mesHeader.type = mesType;
@@ -113,7 +113,7 @@ void NetWork::SendAllMes(MesType mesType, MesPacket data)
 			if (intSendCount_ >= data.size() * 4)
 			{
 				header.mesHeader.next = 0;
-				header.mesHeader.length = data.size() - 2;
+				header.mesHeader.length_ = data.size() - 2;
 				header.mesHeader.sendID = id;
 				data[0] = { header.intHeader[0] };
 				data[1] = { header.intHeader[1] };
@@ -123,7 +123,7 @@ void NetWork::SendAllMes(MesType mesType, MesPacket data)
 			else
 			{
 				header.mesHeader.next = 1;
-				header.mesHeader.length = intSendCount_ / 4 - 2;
+				header.mesHeader.length_ = intSendCount_ / 4 - 2;
 				header.mesHeader.sendID = id;
 				data[0] = { header.intHeader[0] };
 				data[1] = { header.intHeader[1] };
@@ -143,44 +143,58 @@ void NetWork::SendAllMes(MesType type)
 
 std::tuple<unsigned int, unsigned int, unsigned int> NetWork::GetTMXState()
 {
-	return {width,length,layer};
+	return { width_,length_,layer_ };
+}
+
+std::pair<int, int> NetWork::GetPlayerID()
+{
+	return { MyID_,MaxPlayer_ };
 }
 
 std::array<IPDATA, 2> NetWork::GetIp(void)
 {
-	GetMyIPAddress(&arrayIP_[0],2);
+	GetMyIPAddress(&arrayIP_[0], 2);
 	return arrayIP_;
 }
 
 void NetWork::Init()
 {
-	revFunc_[MesType::COUNT_DOWN_ROOM] = [&]() { return; };
-	
-	revFunc_[MesType::ID] = [&]() {  return; };
+	revFunc_[MesType::COUNT_DOWN_ROOM] = [&]() {};
 
-	revFunc_[MesType::TMX_SIZE] = [&]() { 
-		width  = revData_[MesType::TMX_SIZE][0].cData[0];
-		length = revData_[MesType::TMX_SIZE][0].cData[1];
-		layer = revData_[MesType::TMX_SIZE][0].cData[2];
+	revFunc_[MesType::ID] = [&]() {
+		MyID_ = revData_[MesType::ID][0].iData;
+		MaxPlayer_ = revData_[MesType::ID][1].iData;
+	};
+
+	revFunc_[MesType::TMX_SIZE] = [&]() {
+		width_ = revData_[MesType::TMX_SIZE][0].cData[0];
+		length_ = revData_[MesType::TMX_SIZE][0].cData[1];
+		layer_ = revData_[MesType::TMX_SIZE][0].cData[2];
 		revData_.erase(MesType::TMX_SIZE);
 	};
 
-	revFunc_[MesType::TMX_DATA] = [&]() { 
+	revFunc_[MesType::TMX_DATA] = [&]() {
 		lpTMXMng.LoadRevTMX(revData_[MesType::TMX_DATA]);
 		revData_.erase(MesType::TMX_DATA);
 	};
 
-	revFunc_[MesType::STANBY_HOST] = [&]() {startFlag_ = true; };
+	revFunc_[MesType::STANBY_HOST] = [&]() {
+		revData_.erase(MesType::STANBY_HOST);
+		startFlag_ = true; };
 
-	revFunc_[MesType::STANBY_GUEST] = [&]() {startFlag_ = true; };
+	revFunc_[MesType::STANBY_GUEST] = [&]() {
+		revData_.erase(MesType::STANBY_GUEST);
+		startFlag_ = true; };
 
 	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
 
 	revFunc_[MesType::POS] = [&]() {
 
 	};
-	
+
 	revFunc_[MesType::SET_BOMB] = [&]() {};
+
+	revFunc_[MesType::RESULT] = [&]() {};
 
 	revFunc_[MesType::DETH] = [&]() {};
 
@@ -201,7 +215,7 @@ bool NetWork::CloseNetWork(void)
 void NetWork::SendStanby()
 {
 	/*std::ifstream ifp("image/mapBomb.tmx");*/
-	
+
 	/*Header header;
 	MesPacket data;*/
 	//ifp.seekg(0, std::ios_base::end);
@@ -328,75 +342,8 @@ void NetWork::SendStanby()
 	auto time = end - start;
 	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
 	std::cout << msec << " msec" << std::endl;
-	
+
 	state_->SetActive(ActiveState::Stanby);
-}
-
-void NetWork::SendStart()
-{
-	//auto hand = state_->GetnetHandle();
-	//MesHeader data;
-	//data.type = MesType::GAMESTART;
-	//NetWorkSend(hand, &data, sizeof(data));
-	//TRACE("スタート信号送信");
-	//state_->SetActive(ActiveState::Play);
-}
-
-bool NetWork::GetRevStanby(void)
-{
-	
-
-
- 	
-	//if (b > 4)
-	//{
-	//	NetWorkRecv(hand, &header, sizeof(header));
-	//	TRACE("受信");
-	//	NetWorkRecv(hand, &data, header.mesHeader.length * sizeof(int));
-	//	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
-
-	//	TRACE("受信");
-	//}
-	//while (GetNetWorkDataLength(hand) >= sizeof(data))
-	//{
-	//	
-	//	if (data.type == MesType::TMX_SIZE)
-	//	{
-	//		start = std::chrono::system_clock::now();
-	//		RevTMX_.resize(data.data[0]);
-	//		TRACE("受け取るTMXサイズは%dです。\n", RevTMX_.size());
-	//	}
-	//	if (data.type == MesType::TMX_DATA)
-	//	{
-	//		RevTMX_[data.data[0]] = data.data[1];
-	//		TRACE("%c",RevTMX_[data.data[0]]);
-	//	}
-	//	if (data.type == MesType::STANBY)
-	//	{
-	//		std::ofstream ofs("mapdata.tmx");
-	//		if (!ofs)
-	//		{
-	//			std::cerr << "ファイルオープンに失敗" << std::endl;
-	//			std::exit(1);
-	//		}
-	//		for (auto x : RevTMX_)
-	//		{
-	//			if (x != NULL)
-	//			{
-	//				ofs << x;
-	//			}
-	//		}
-	//		end = std::chrono::system_clock::now();  // 計測終了時間
-	//		auto time = end - start; 
-	//		auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
-	//		TRACE("初期化信号受信\n");
-	//		// 処理に要した時間をミリ秒に変換
-	//		
-	//		std::cout << msec << " msec" << std::endl;
-	//		return true;
-	//	}
-	//}
-	return true;
 }
 
 void NetWork::RevUpdate(void)
@@ -412,27 +359,27 @@ void NetWork::RevUpdate(void)
 				int writePos = 0;				// データ格納のvectorの書き込み位置
 				NetWorkRecv(data.NWHandle, &header, sizeof(header));
 
-				revData_[header.mesHeader.type].resize(header.mesHeader.length);
-				if (header.mesHeader.length > 0)
+				revData_[header.mesHeader.type].resize(header.mesHeader.length_);
+				if (header.mesHeader.length_ > 0)
 				{
 
-					if (sizeof(unionData) * header.mesHeader.length <= GetNetWorkDataLength(data.NWHandle))
+					if (sizeof(unionData) * header.mesHeader.length_ <= static_cast<unsigned int>(GetNetWorkDataLength(data.NWHandle)))
 					{
-						NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length);
+						NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length_);
 					}
-					writePos = header.mesHeader.length;
+					writePos = header.mesHeader.length_;
 					while (header.mesHeader.next)
 					{
 						if (sizeof(header) <= GetNetWorkDataLength(data.NWHandle))
 						{
 							NetWorkRecv(data.NWHandle, &header, sizeof(header));
-							revData_[header.mesHeader.type].resize(writePos + header.mesHeader.length);
-							if (sizeof(unionData) * header.mesHeader.length <= GetNetWorkDataLength(data.NWHandle))
+							revData_[header.mesHeader.type].resize(writePos + header.mesHeader.length_);
+							if (sizeof(unionData) * header.mesHeader.length_ <= static_cast<unsigned int>(GetNetWorkDataLength(data.NWHandle)))
 							{
-								NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length);
+								NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length_);
 							}
 						}
-						writePos += header.mesHeader.length;
+						writePos += header.mesHeader.length_;
 					}
 				}
 				revFunc_[header.mesHeader.type]();
@@ -446,13 +393,21 @@ bool NetWork::GetStartFlag(void)
 	return startFlag_;
 }
 
-void NetWork::GetRevStart(void)
+std::vector<unionData> NetWork::GetRevData(MesType mesType)
 {
-
+	return revData_[mesType];
 }
+
 
 NetWork::NetWork()
 {
+	arrayIP_ = { 0,0 };
+	MyID_ = 0;
+	MaxPlayer_ = 0;
+	width_ = 0;
+	length_ = 0;
+	layer_ = 0;
+	startFlag_ = false;
 	intSendCount_ = 1000;
 }
 

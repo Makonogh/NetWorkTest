@@ -14,7 +14,8 @@ GameScene::GameScene()
 
 	// マップデータの取得
 	mapData_ = lpTMXMng.GetMapData();
-
+	myID_ = lpNetWork.GetPlayerID().first;
+	playerMax_ = lpNetWork.GetPlayerID().second;
 	// マップデータから
 	for (int y = 0; y < 17; y++)
 	{
@@ -23,7 +24,7 @@ GameScene::GameScene()
 			auto data = mapData_[LAYER::OBJ][y * 21 + x];
 			if (data != 0)
 			{
-				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x,32 * y),static_cast<COLOR>(data - 1)));
+				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x, 32 * y), static_cast<COLOR>(data - 1)));
 			}
 			data = NULL;
 			data = mapData_[LAYER::ITEM][y * 21 + x];
@@ -31,14 +32,14 @@ GameScene::GameScene()
 			{
 				ItemList_.emplace_back(std::make_shared <Item>(Vector2(32 * x, 32 * y), static_cast<ITEM_TYPE>(data - 1)));
 			}
-		
-			if (mapData_[LAYER::CHAR][y * 21 + x] == 4)
+
+			if (mapData_[LAYER::CHAR][y * 21 + x] == 4 && CharList_.size() < playerMax_)
 			{
-				CharList_.emplace_back(std::make_shared <Char>(Vector2(32 * x, 32 * y),*this));
+				CharList_.emplace_back(std::make_shared <Char>(Vector2(32 * x, 32 * y), *this));
 			}
 		}
 	}
-	screenID_ = MakeScreen(32 * 21 , 32 * 17,true);
+	screenID_ = MakeScreen(32 * 21, 32 * 17, true);
 }
 
 GameScene::~GameScene()
@@ -51,7 +52,7 @@ void GameScene::SetBomb()
 
 void GameScene::SetGene(Vector2 tipos)
 {
-	ObjList_.emplace_back(std::make_shared <Generator>(tipos,*this));
+	ObjList_.emplace_back(std::make_shared <Generator>(tipos, *this));
 }
 
 std::list<std::shared_ptr<Obj>> GameScene::GetObj()
@@ -60,11 +61,11 @@ std::list<std::shared_ptr<Obj>> GameScene::GetObj()
 }
 uniqueScene GameScene::Update(uniqueScene own)
 {
-	for (auto data : ObjList_)
+	for (auto& data : ObjList_)
 	{
 		data->Update();
 	}
-	for (auto data : CharList_)
+	for (auto& data : CharList_)
 	{
 		data->UpdateDef();
 	}
@@ -76,12 +77,12 @@ void GameScene::Draw()
 {
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
-	
+
 	for (int y = 0; y < 17; y++)
 	{
 		for (int x = 0; x < 21; x++)
 		{
-			if (mapData_[LAYER::BG][y * 21 + x] > 0) 
+			if (mapData_[LAYER::BG][y * 21 + x] > 0)
 			{
 				DrawGraph(x * 32, y * 32, TileSet_[mapData_[LAYER::BG][y * 21 + x] - 1], true);
 			}
@@ -98,24 +99,24 @@ void GameScene::Draw()
 			}
 		}
 	}
-	
-	for (auto data : ObjList_)
+
+	for (auto& data : ObjList_)
 	{
 		data->Draw(TileSet_);
 	}
 
-	for (auto data : ItemList_)
+	for (auto& data : ItemList_)
 	{
 		data->Draw(TileSet_);
 	}
 
-	for (auto data : CharList_)
+	for (auto& data : CharList_)
 	{
 		data->Draw();
 	}
 }
 
-std::vector<unsigned  char>& GameScene::GetMapData_(LAYER layer)
+std::vector<unsigned  char>& GameScene::GetMapData_(LAYER layer_)
 {
-	return mapData_[layer];
+	return mapData_[layer_];
 }

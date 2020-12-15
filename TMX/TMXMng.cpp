@@ -8,14 +8,14 @@
 TMXMng::TMXMng()
 {
 	auto s = lpNetWork.GetTMXState();
-	width = std::get<0>(s);
-	length = std::get<1>(s);
-	layer = std::get<2>(s);
-	LayerMap_[LAYER::BG].resize(width * length);
-	LayerMap_[LAYER::ITEM].resize(width * length);
-	LayerMap_[LAYER::OBJ].resize(width * length);
-	LayerMap_[LAYER::CHAR].resize(width * length);
-	LayerMap_[LAYER::BOMB].resize(width * length);
+	width_ = std::get<0>(s);
+	length_ = std::get<1>(s);
+	layer_ = std::get<2>(s);
+	LayerMap_[LAYER::BG].resize(width_ * length_);
+	LayerMap_[LAYER::ITEM].resize(width_ * length_);
+	LayerMap_[LAYER::OBJ].resize(width_ * length_);
+	LayerMap_[LAYER::CHAR].resize(width_ * length_);
+	LayerMap_[LAYER::BOMB].resize(width_ * length_);
 }
 
 TMXMng::~TMXMng()
@@ -46,8 +46,8 @@ bool TMXMng::LoadTSX(void)
 
 bool TMXMng::SendMapData(void)
 {
-	MesPacket expData;
-	unionData data;
+	MesPacket expData = {};
+	unionData data = {};
 	data.cData[0] = 21;
 	data.cData[1] = 17;
 	data.cData[2] = 4;
@@ -55,15 +55,15 @@ bool TMXMng::SendMapData(void)
 
 	expData.emplace_back(data);
 
-	lpNetWork.SendAllMes(MesType::TMX_SIZE,expData);
-	
+	lpNetWork.SendAllMes(MesType::TMX_SIZE, expData);
+
 	expData.clear();
-	for (auto x:CSV_)
+	for (auto x : CSV_)
 	{
 		expData.emplace_back();
 	}
 
-	lpNetWork.SendAllMes(MesType::TMX_DATA,expData);
+	lpNetWork.SendAllMes(MesType::TMX_DATA, expData);
 
 	lpNetWork.SendAllMes(MesType::STANBY_HOST);
 	return false;
@@ -72,9 +72,9 @@ bool TMXMng::SendMapData(void)
 bool TMXMng::LoadRevTMX(std::vector<unionData>& data)
 {
 	int writePos = 0;
-	for (int ly = 0;ly < layer;ly++)
+	for (unsigned int ly = 0; ly < layer_; ly++)
 	{
-		for (int x = 0; x < width * length; x++)
+		for (unsigned int x = 0; x < width_ * length_; x++)
 		{
 			if (writePos % 2 == 0)
 			{
@@ -94,8 +94,8 @@ bool TMXMng::LoadRevTMX(std::vector<unionData>& data)
 std::pair<int, int> TMXMng::GetMapSize(void)
 {
 	std::pair<int, int> redata;
-	redata.first = width;
-	redata.second = length;
+	redata.first = width_;
+	redata.second = length_;
 	return redata;
 }
 
@@ -110,13 +110,13 @@ void TMXMng::ShowData(rapidxml::xml_node<>* node, int indent)
 		for (int i = 0; i < indent; i++) std::cout << "\t";
 		std::cout << "Node:" << node->name() << "\n";
 
-		for (rapidxml::xml_attribute<>*atb = node->first_attribute();
+		for (rapidxml::xml_attribute<>* atb = node->first_attribute();
 			atb != nullptr;
-			atb = atb -> next_attribute())
+			atb = atb->next_attribute())
 		{
 			for (int i = 0; i < indent; i++) std::cout << "\t";
-			std::cout << atb->name() ;
-			std::cout << ":{" << atb->value() <<"}"<< "\n";
+			std::cout << atb->name();
+			std::cout << ":{" << atb->value() << "}" << "\n";
 		}
 	}
 	else return;
@@ -134,19 +134,19 @@ void TMXMng::ShowData(rapidxml::xml_node<>* node, int indent)
 
 bool TMXMng::LoadMapData(rapidxml::xml_node<>* node)
 {
-	
-	for (rapidxml::xml_node<>* layer = node->first_node()->next_sibling("layer");
-		layer != nullptr;
-		layer = layer->next_sibling())
+
+	for (rapidxml::xml_node<>* layer_ = node->first_node()->next_sibling("layer");
+		layer_ != nullptr;
+		layer_ = layer_->next_sibling())
 	{
-		rapidxml::xml_attribute<>* atb = layer->first_attribute("id");
+		rapidxml::xml_attribute<>* atb = layer_->first_attribute("id");
 
 		LAYER layerNum = static_cast<LAYER> (atoi(atb->value()) - 1);
 
-		std::istringstream iss(layer->first_node()->value());
+		std::istringstream iss(layer_->first_node()->value());
 		std::string str;
 		std::vector<std::string> result;
-		
+
 		while (std::getline(iss, str, ','))
 		{
 			result.push_back(str);
@@ -162,11 +162,11 @@ bool TMXMng::LoadMapData(rapidxml::xml_node<>* node)
 bool TMXMng::LoadCSV()
 {
 	int csvnum = 0;
-	for (auto y = 0;y < 4;y++)
+	for (auto y = 0; y < 4; y++)
 	{
-		for(int x = 0; x < 21 * 17; x++)
+		for (int x = 0; x < 21 * 17; x++)
 		{
-			CSV_.emplace_back(LayerMap_[static_cast<LAYER>(y)][x] );
+			CSV_.emplace_back(LayerMap_[static_cast<LAYER>(y)][x]);
 			csvnum++;
 		}
 	}

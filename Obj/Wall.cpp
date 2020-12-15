@@ -10,7 +10,7 @@ Wall::Wall(Vector2 pos, COLOR color)
 	tilePos_ = pos / 32;
 }
 
-void Wall::Draw(int *TileImg)
+void Wall::Draw(int* TileImg)
 {
 	DrawGraph(pos_.x, pos_.y, TileImg[static_cast<int>(color_)], true);
 }

@@ -42,9 +42,9 @@ private:
 	bool LoadMapData(rapidxml::xml_node<>* node);	// マップデータをLayerMap_に格納する
 	bool LoadCSV();		// CSVを抽出
 	
-	unsigned int width;
-	unsigned int length;
-	unsigned int layer;
+	unsigned int width_;
+	unsigned int length_;
+	unsigned int layer_;
 	std::map < LAYER, std::vector<unsigned char>> LayerMap_;
 	std::vector<unsigned int> CSV_;							// TMXのCSV部分の数字だけを格納
 };
