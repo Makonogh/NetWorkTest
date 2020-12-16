@@ -24,10 +24,10 @@ public:
 	OBJ_TYPE GetType();						// タイプのゲット関数
 	virtual void Draw();					// 描画
 	virtual void Draw(int* TileImg);		// 描画
-	virtual void Update();					// Update（主にCharクラス以外の）
-	virtual void UpdateDef();				// プレイヤークラスの操作する関数(charが使用
+	virtual void Update();					// Update
+	virtual void UpdateOpe();				// プレイヤークラスの操作する関数(charが使用
 	virtual void UpdateAuto();				// オートパイロットで操作する関数(charが使用
-	virtual void UpdateNet();				// ネットの獲得情報で操作する関数(charが使用
+	virtual void UpdateRev();				// ネットの獲得情報で操作する関数(charが使用
 	virtual ~Obj() = 0;
 protected:
 	OBJ_TYPE type_;					// 自分のオブジェクトのタイプ	

@@ -32,7 +32,7 @@ void Obj::Update()
 {
 }
 
-void Obj::UpdateDef()
+void Obj::UpdateOpe()
 {
 }
 
@@ -40,7 +40,7 @@ void Obj::UpdateAuto()
 {
 }
 
-void Obj::UpdateNet()
+void Obj::UpdateRev()
 {
 }
 

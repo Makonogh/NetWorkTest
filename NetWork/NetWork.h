@@ -68,7 +68,7 @@ public:
 	ActiveState ConnectHost(IPDATA hostIP);
 	void SendMes(MesType type,MesPacket data,int ID);	// データを送る(タイプとデータ部がある)
 	void SendMes(MesType type,int ID);					// データを送る(タイプだけ)
-	void SendAllMes(MesType type,MesPacket);			// データを送る(すべてに)
+	void SendAllMes(MesType type,MesPacket data);		// データを送る(すべてに)
 	void SendAllMes(MesType type);						// データを送る(すべてにデータ部なし)
 	bool Update();
 	void RevUpdate(void);				// データを受け取りrevDataに適切なキーで格納する関数

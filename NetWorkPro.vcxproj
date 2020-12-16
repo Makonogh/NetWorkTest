@@ -148,7 +148,6 @@
     <ClCompile Include="Obj\Item.cpp" />
     <ClCompile Include="Obj\Generator.cpp" />
     <ClCompile Include="Obj\Bomb.cpp" />
-    <ClCompile Include="Obj\Char.cpp" />
     <ClCompile Include="input\GamePad.cpp" />
     <ClCompile Include="input\KeyInput.cpp" />
     <ClCompile Include="NetWork\GuestState.cpp" />
@@ -157,6 +156,7 @@
     <ClCompile Include="NetWork\NetWorkState.cpp" />
     <ClCompile Include="NetWork\NetWork.cpp" />
     <ClCompile Include="Obj\Obj.cpp" />
+    <ClCompile Include="Obj\Player.cpp" />
     <ClCompile Include="Scene\BaseScene.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\SceneMng.cpp" />
@@ -181,12 +181,12 @@
     <ClInclude Include="NetWork\NetWorkState.h" />
     <ClInclude Include="NetWork\NetWork.h" />
     <ClInclude Include="Obj\Bomb.h" />
-    <ClInclude Include="Obj\Char.h" />
     <ClInclude Include="Obj\Obj.h" />
     <ClInclude Include="Parse\rapidxml.hpp" />
     <ClInclude Include="Parse\rapidxml_iterators.hpp" />
     <ClInclude Include="Parse\rapidxml_print.hpp" />
     <ClInclude Include="Parse\rapidxml_utils.hpp" />
+    <ClInclude Include="Obj\Player.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Scene\SceneMng.h" />

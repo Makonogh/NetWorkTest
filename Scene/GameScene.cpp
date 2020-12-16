@@ -1,5 +1,5 @@
 #include "GameScene.h"
-#include "../Obj/Char.h"
+#include "../Obj/Player.h"
 #include "../Obj/Wall.h"
 #include "../Obj/Item.h"
 #include "../NetWork/NetWork.h"
@@ -33,9 +33,9 @@ GameScene::GameScene()
 				ItemList_.emplace_back(std::make_shared <Item>(Vector2(32 * x, 32 * y), static_cast<ITEM_TYPE>(data - 1)));
 			}
 
-			if (mapData_[LAYER::CHAR][y * 21 + x] == 4 && CharList_.size() < playerMax_)
+			if (mapData_[LAYER::CHAR][y * 21 + x] == 4 && PlayerList_.size() < playerMax_)
 			{
-				CharList_.emplace_back(std::make_shared <Char>(Vector2(32 * x, 32 * y), *this));
+				PlayerList_.emplace_back(std::make_shared <Player>(Vector2(32 * x, 32 * y), *this));
 			}
 		}
 	}
@@ -65,9 +65,9 @@ uniqueScene GameScene::Update(uniqueScene own)
 	{
 		data->Update();
 	}
-	for (auto& data : CharList_)
+	for (auto& data : PlayerList_)
 	{
-		data->UpdateDef();
+		data->Update();
 	}
 	Draw();
 	return own;
@@ -110,7 +110,7 @@ void GameScene::Draw()
 		data->Draw(TileSet_);
 	}
 
-	for (auto& data : CharList_)
+	for (auto& data : PlayerList_)
 	{
 		data->Draw();
 	}
@@ -119,4 +119,9 @@ void GameScene::Draw()
 std::vector<unsigned  char>& GameScene::GetMapData_(LAYER layer_)
 {
 	return mapData_[layer_];
+}
+
+std::pair<unsigned int, unsigned int> GameScene::GetID()
+{
+	return { myID_,playerMax_ };
 }
