@@ -79,6 +79,7 @@ public:
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	std::vector<unionData> GetRevData(MesType mesType);						// 引数のタイプのデータのゲット関数
+	std::vector<int> GetPosData(int id);
 	std::tuple<unsigned int, unsigned int, unsigned int> GetTMXState();		// width,length,layer
 	std::pair<int, int> GetPlayerID();										// MyID,MaxPlayer
 	std::array<IPDATA, 2> GetIp(void);	
@@ -92,6 +93,7 @@ private:
 	std::vector<int> MapData_;
 	std::map < MesType, std::function<void(void)>> revFunc_;				// 関数ポインタ
 	std::map < MesType, std::vector<unionData> > revData_;					// 受け取ったデータを保存
+	std::map <int, std::array<int,3>> revPos_;
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
 	std::pair<MesType, MesPacket> MesData_;								

@@ -28,7 +28,7 @@ private:
 	bool Play(void);
 
 	std::unique_ptr<Controller> controller_;			// コントローラー情報を格納するユニークポインタ
-	int Image;
+	int Image_;
 	int posx;
 	int posy;
 	int screen_size_x;

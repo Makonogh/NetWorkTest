@@ -5,7 +5,7 @@
 #include "..//NetWork/NetWork.h"
 #include <algorithm>
 
-unsigned int Player::charID_ = -5;
+unsigned int Player::charID_ = 0;
 
 Player::Player(Vector2 pos, BaseScene& scene) :scene_(scene)
 {
@@ -13,21 +13,15 @@ Player::Player(Vector2 pos, BaseScene& scene) :scene_(scene)
 	size_ = { CHAR_SIZE_X,CHAR_SIZE_Y };
 	tilePos_ = pos_ / 32;
 	type_ = OBJ_TYPE::CHAR;
+	myID_ = charID_;
 	charID_ += 5;
 
-	LoadDivGraph("image/bomberman1.png", 20, 5, 4, 32, 205 / 4, Image);
-	if (charID_ % 2)
-	{
-		dir_ = DIR::LEFT;
-	}
-	else
-	{
-		dir_ = DIR::RIGHT;
-	}
-	AnimFrame = 0;
-	Frame = 0;
-	
-	if (charID_ == dynamic_cast<GameScene&>(scene_).GetID().first)
+	LoadDivGraph("image/bomberman1.png", 20, 5, 4, 32, 205 / 4, Image_);
+	dir_ = static_cast<DIR>(myID_ % 4 + 1);
+	AnimFrame_ = 0;
+	Frame_ = 0;
+
+	if (myID_ == dynamic_cast<GameScene&>(scene_).GetID().first)
 	{
 		playType_ = PLAY_TYPE::OPE;
 
@@ -45,14 +39,14 @@ void Player::Draw()
 	if (playType_ == PLAY_TYPE::OPE) {
 		DrawBox(tilePos_.x * 32, tilePos_.y * 32, tilePos_.x * 32 + 32, tilePos_.y * 32 + 32, 0x00ff00, false);
 	}
-	DrawGraph(pos_.x, pos_.y - 25, Image[static_cast<int>(dir_) + AnimFrame / 10 % 4 * 5], true);
-	AnimFrame++;
+	DrawGraph(pos_.x, pos_.y - 25, Image_[static_cast<int>(dir_) + AnimFrame_ / 10 % 4 * 5], true);
+	AnimFrame_++;
 }
 
 void Player::Update()
 {
 	updFunc_();
-	Frame++;
+	Frame_++;
 }
 
 void Player::UpdateOpe()
@@ -60,19 +54,19 @@ void Player::UpdateOpe()
 	auto pos = pos_;
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
 	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_UP, Frame);
+		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_UP, Frame_);
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
 	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_DOWN, Frame);
+		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_DOWN, Frame_);
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
 	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_RIGHT, Frame);
+		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_RIGHT, Frame_);
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
 	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_LEFT, Frame);
+		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_LEFT, Frame_);
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_1)
 	{
@@ -126,7 +120,7 @@ void Player::UpdateOpe()
 
 	MesPacket sendData;
 	unionData data[4] = {};
-	data[0].iData = charID_;
+	data[0].iData = myID_;
 	data[1].iData = pos_.x;
 	data[2].iData = pos_.y;
 	data[3].iData = static_cast<unsigned int> (dir_);
@@ -141,6 +135,13 @@ void Player::UpdateAuto()
 
 void Player::UpdateRev()
 {
+	auto data = lpNetWork.GetPosData(myID_);
+	if (data[2] != -1)
+	{
+		pos_.x = data[0];
+		pos_.y = data[1];
+		dir_ = static_cast<DIR> (data[2]);
+	}
 }
 
 

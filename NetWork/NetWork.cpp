@@ -189,7 +189,7 @@ void NetWork::Init()
 	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
 
 	revFunc_[MesType::POS] = [&]() {
-
+	revPos_.insert
 	};
 
 	revFunc_[MesType::SET_BOMB] = [&]() {};
@@ -396,6 +396,15 @@ bool NetWork::GetStartFlag(void)
 std::vector<unionData> NetWork::GetRevData(MesType mesType)
 {
 	return revData_[mesType];
+}
+
+std::vector<int> NetWork::GetPosData(int id)
+{
+	if (revPos_.find(id) == revPos_.end())
+	{
+		return std::vector{ -1,-1,-1 };
+	}
+	return revPos_[id];
 }
 
 

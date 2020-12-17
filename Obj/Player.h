@@ -42,9 +42,10 @@ private:
     std::function<void(void)> updFunc_;				// 関数ポインタ
 
     static unsigned int charID_;             // キャラのID（生成された順番）
-    int Image[20];                  // キャラのアニメーション画像バンドル
-    int AnimFrame;                  // アニメ用のフレーム
-    int Frame;                      // キャラ特融のフレーム
+    unsigned int myID_;
+    int Image_[20];                  // キャラのアニメーション画像バンドル
+    int AnimFrame_;                  // アニメ用のフレーム
+    int Frame_;                      // キャラ特融のフレーム
     DIR dir_;                       // 方向
     PLAY_TYPE playType_;                // 自分のキャラのタイプ
     std::vector < std::pair<int, int>> KeyLog;

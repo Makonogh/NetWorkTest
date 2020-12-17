@@ -18,7 +18,7 @@ LoginScene::LoginScene()
 	screen_size_y = 0;
 	posx = 0;
 	posy = 0;
-	Image = LoadGraph("image/bakudan.png", true);
+	Image_ = LoadGraph("image/bakudan.png", true);
 
 	GetDrawScreenSize(&screen_size_x, &screen_size_y);
 
@@ -52,7 +52,7 @@ void LoginScene::Draw(void)
 {
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
-	DrawGraph(0, 0, Image, true);
+	DrawGraph(0, 0, Image_, true);
 	/*ScreenFlip();*/
 }
 

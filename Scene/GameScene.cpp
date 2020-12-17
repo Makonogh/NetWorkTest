@@ -21,18 +21,17 @@ GameScene::GameScene()
 	{
 		for (int x = 0; x < 21; x++)
 		{
-			auto data = mapData_[LAYER::OBJ][y * 21 + x];
-			if (data != 0)
-			{
-				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x, 32 * y), static_cast<COLOR>(data - 1)));
-			}
-			data = NULL;
-			data = mapData_[LAYER::ITEM][y * 21 + x];
+			auto data = mapData_[LAYER::ITEM][y * 21 + x];
 			if (data != 0)
 			{
 				ItemList_.emplace_back(std::make_shared <Item>(Vector2(32 * x, 32 * y), static_cast<ITEM_TYPE>(data - 1)));
 			}
-
+			data = NULL;
+			data = mapData_[LAYER::OBJ][y * 21 + x];
+			if (data != 0)
+			{
+				ObjList_.emplace_back(std::make_shared <Wall>(Vector2(32 * x, 32 * y), static_cast<COLOR>(data - 1)));
+			}
 			if (mapData_[LAYER::CHAR][y * 21 + x] == 4 && PlayerList_.size() < playerMax_)
 			{
 				PlayerList_.emplace_back(std::make_shared <Player>(Vector2(32 * x, 32 * y), *this));
@@ -100,12 +99,12 @@ void GameScene::Draw()
 		}
 	}
 
-	for (auto& data : ObjList_)
+	for (auto& data : ItemList_)
 	{
 		data->Draw(TileSet_);
 	}
 
-	for (auto& data : ItemList_)
+	for (auto& data : ObjList_)
 	{
 		data->Draw(TileSet_);
 	}
