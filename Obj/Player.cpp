@@ -37,7 +37,7 @@ Player::Player(Vector2 pos, BaseScene& scene) :scene_(scene)
 void Player::Draw()
 {
 	if (playType_ == PLAY_TYPE::OPE) {
-		DrawBox(tilePos_.x * 32, tilePos_.y * 32, tilePos_.x * 32 + 32, tilePos_.y * 32 + 32, 0x00ff00, false);
+		DrawBox(pos_.x, pos_.y, pos_.x + 32,pos_.y + 32, 0x00ff00, false);
 	}
 	DrawGraph(pos_.x, pos_.y - 25, Image_[static_cast<int>(dir_) + AnimFrame_ / 10 % 4 * 5], true);
 	AnimFrame_++;
@@ -52,22 +52,22 @@ void Player::Update()
 void Player::UpdateOpe()
 {
 	auto pos = pos_;
-	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
-	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_UP, Frame_);
-	}
-	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
-	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_DOWN, Frame_);
-	}
-	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
-	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_RIGHT, Frame_);
-	}
-	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
-	{
-		KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_LEFT, Frame_);
-	}
+	//if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
+	//{
+	//	KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_UP, Frame_);
+	//}
+	//if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
+	//{
+	//	KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_DOWN, Frame_);
+	//}
+	//if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
+	//{
+	//	KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_RIGHT, Frame_);
+	//}
+	//if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
+	//{
+	//	KeyLog.emplace_back((DX_INPUT_KEY_PAD1)&PAD_INPUT_LEFT, Frame_);
+	//}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_1)
 	{
 		dynamic_cast<GameScene&>(scene_).SetGene(tilePos_);
@@ -75,26 +75,32 @@ void Player::UpdateOpe()
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_UP)
 	{
 		pos.y -= 4;
-		tilePos_.y = (pos.y) / 32;
+		tilePos_.y--;
 		dir_ = DIR::UP;
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
 	{
 		pos.y += 4;
-		tilePos_.y = (pos.y + 30) / 32;
+		tilePos_.y++;
 		dir_ = DIR::DOWN;
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
 	{
 		pos.x += 4;
-		tilePos_.x = (pos.x + 32) / 32;
+		tilePos_.x++;
 		dir_ = DIR::RIGHT;
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT)
 	{
 		pos.x -= 4;
-		tilePos_.x = (pos.x) / 32;
+		tilePos_.x--;
 		dir_ = DIR::LEFT;
+	}
+	if (CheckHitKey(KEY_INPUT_L))
+	{
+		MesPacket data;
+		data.emplace_back(unionData{ myID_ });
+		lpNetWork.SendAllMes(MesType::DETH, data);
 	}
 
 	auto moveFlag = true;
@@ -102,7 +108,7 @@ void Player::UpdateOpe()
 	{
 		for (auto& data : dynamic_cast<GameScene&>(scene_).GetObj())
 		{
-			if (data->GetType() == OBJ_TYPE::WALL)
+			if (data->GetType() == OBJ_TYPE::WALL || data->GetType()== OBJ_TYPE::BOMB)
 			{
 				if (tilePos_ == data->GetTilePos())
 				{

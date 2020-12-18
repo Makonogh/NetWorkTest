@@ -33,8 +33,8 @@ private:
 	std::map < LAYER, std::vector<unsigned char>> mapData_;			// マップデータ(TMXMngから受け取って格納する)
 	std::map<UpDate, std::function<bool(void)>> Update_;			// 関数オブジェクト
 	std::list<std::shared_ptr <Obj>> ObjList_;						// オブジェクトを管理するベクター
-	std::list<std::shared_ptr <Obj>> PlayerList_;						// キャラを管理するベクター
-	std::list<std::shared_ptr <Obj>> ItemList_;						// 
+	std::list<std::shared_ptr <Obj>> PlayerList_;					// キャラを管理するベクター
+	std::list<std::shared_ptr <Obj>> ItemList_;						// アイテムを管理するベクター
 
 	unsigned int myID_;
 	unsigned int playerMax_;

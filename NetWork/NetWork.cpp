@@ -189,14 +189,19 @@ void NetWork::Init()
 	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
 
 	revFunc_[MesType::POS] = [&]() {
-	revPos_.insert
+		revPos_[revData_[MesType::POS][0].iData][0] = revData_[MesType::POS][1].iData;
+		revPos_[revData_[MesType::POS][0].iData][1] = revData_[MesType::POS][2].iData;
+		revPos_[revData_[MesType::POS][0].iData][2] = revData_[MesType::POS][3].iData;
 	};
 
 	revFunc_[MesType::SET_BOMB] = [&]() {};
 
 	revFunc_[MesType::RESULT] = [&]() {};
 
-	revFunc_[MesType::DETH] = [&]() {};
+	revFunc_[MesType::DETH] = [&]() {
+		revData_[MesType::DETH];
+		return;
+	};
 
 	std::thread th(&NetWork::RevUpdate, this);
 	th.detach();
@@ -398,11 +403,11 @@ std::vector<unionData> NetWork::GetRevData(MesType mesType)
 	return revData_[mesType];
 }
 
-std::vector<int> NetWork::GetPosData(int id)
+std::array<int,3> NetWork::GetPosData(int id)
 {
 	if (revPos_.find(id) == revPos_.end())
 	{
-		return std::vector{ -1,-1,-1 };
+		return std::array{ -1,-1,-1 };
 	}
 	return revPos_[id];
 }

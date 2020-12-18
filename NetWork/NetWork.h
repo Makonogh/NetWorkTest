@@ -79,7 +79,7 @@ public:
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	std::vector<unionData> GetRevData(MesType mesType);						// 引数のタイプのデータのゲット関数
-	std::vector<int> GetPosData(int id);
+	std::array<int,3> GetPosData(int id);
 	std::tuple<unsigned int, unsigned int, unsigned int> GetTMXState();		// width,length,layer
 	std::pair<int, int> GetPlayerID();										// MyID,MaxPlayer
 	std::array<IPDATA, 2> GetIp(void);	
