@@ -2,6 +2,7 @@
 #include "../Obj/Player.h"
 #include "../Obj/Wall.h"
 #include "../Obj/Item.h"
+#include "../Obj/Bomb.h"
 #include "../NetWork/NetWork.h"
 #include "../Obj/Generator.h"
 
@@ -45,9 +46,9 @@ GameScene::~GameScene()
 {
 }
 
-void GameScene::SetBomb(Vector2 pos,int length)
+void GameScene::SetBomb(Vector2 pos,int length, std::chrono::system_clock::time_point t)
 {
-	
+	ObjList_.emplace_back(std::make_shared <Bomb>(Vector2(pos.x,pos.y), length,t));
 }
 
 void GameScene::SetGene(Vector2 tipos)

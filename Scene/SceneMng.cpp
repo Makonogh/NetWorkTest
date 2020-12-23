@@ -8,7 +8,7 @@ SceneMng* SceneMng::s_instance = nullptr;
 
 std::chrono::system_clock::time_point SceneMng::GetTime()
 {
-	return start_;
+	return end_;
 }
 
 void SceneMng::Run(void)

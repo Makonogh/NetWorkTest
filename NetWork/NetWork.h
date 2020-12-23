@@ -24,7 +24,7 @@ enum class  MesType : unsigned char
 	TMX_SIZE,			// CSVのサイズ							l int{横のマス,縦のマス,レイヤーの数}
 	TMX_DATA,			// TMXデータのCSV						l TMXのデータ( int = char{上4ビット,下4ビット} * 4)
 	POS,				// ゲーム中のデータ						l ID,X,Y,向き
-	SET_BOMB,			// ボムの設置							l オーナーID.自身のID,X,Y,length,時間{int * 2}
+	SET_BOMB,			// ボムの設置							l オーナーID.自身のID,X,Y,length(爆発の長さ),時間{int * 2}
 	DETH,				// 死亡 キャラのID付与					l キャラのID
 	RESULT, 			// リザルト								l 優勝順にunsigned int (charID)
 	LOST,				// 切断時に生成							l なし
@@ -76,10 +76,12 @@ public:
 	void SendStanby();					// ホストがゲストに初期化信号を送る関数
 	
 	bool GetStartFlag(void);			// スタートフラグのゲット関数
+	bool GetDethData(int id);
 	NetWorkMode GetNetWorkMode();
 	ActiveState GetActive(void);
 	std::vector<unionData> GetRevData(MesType mesType);						// 引数のタイプのデータのゲット関数
 	std::array<int,3> GetPosData(int id);
+	std::array<int,6> GetBombData(int id);
 	std::tuple<unsigned int, unsigned int, unsigned int> GetTMXState();		// width,length,layer
 	std::pair<int, int> GetPlayerID();										// MyID,MaxPlayer
 	std::array<IPDATA, 2> GetIp(void);	
@@ -94,6 +96,8 @@ private:
 	std::map < MesType, std::function<void(void)>> revFunc_;				// 関数ポインタ
 	std::map < MesType, std::vector<unionData> > revData_;					// 受け取ったデータを保存
 	std::map <int, std::array<int,3>> revPos_;
+	std::map <int, std::array<int,6>> revBomb_;
+	std::map <int, bool> revDeth_;
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;
 	std::pair<MesType, MesPacket> MesData_;								

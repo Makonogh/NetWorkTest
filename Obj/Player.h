@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include <functional>
+#include <chrono>
 
 #define CHAR_SIZE_X 32
 #define CHAR_SIZE_Y 52
@@ -26,6 +27,13 @@ enum class PLAY_TYPE
     REV,                    // 受信したデータで動かすタイプ
 };
 
+union Time
+{
+    Time();
+    std::chrono::system_clock::time_point Data;
+    int iData[2];
+};
+
 class Player :
     public Obj
 {
@@ -41,7 +49,6 @@ public:
     ~Player();
 private:
     std::function<void(void)> updFunc_;				// 関数ポインタ
-
     static unsigned int charID_;             // キャラのID（生成された順番）
     unsigned int myID_;
     int Image_[20];                  // キャラのアニメーション画像バンドル

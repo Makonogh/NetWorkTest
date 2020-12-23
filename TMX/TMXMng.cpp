@@ -11,6 +11,7 @@ TMXMng::TMXMng()
 	width_ = std::get<0>(s);
 	length_ = std::get<1>(s);
 	layer_ = std::get<2>(s);
+	startFlag_ = false;
 	LayerMap_[LAYER::BG].resize(width_ * length_);
 	LayerMap_[LAYER::ITEM].resize(width_ * length_);
 	LayerMap_[LAYER::OBJ].resize(width_ * length_);
@@ -71,6 +72,7 @@ bool TMXMng::SendMapData(void)
 
 bool TMXMng::LoadRevTMX(std::vector<unionData>& data)
 {
+	std::lock_guard<std::mutex> lock(mtx);
 	int writePos = 0;
 	for (unsigned int ly = 0; ly < layer_; ly++)
 	{
@@ -88,7 +90,13 @@ bool TMXMng::LoadRevTMX(std::vector<unionData>& data)
 			writePos++;
 		}
 	}
+	startFlag_ = true;
 	return true;
+}
+
+bool TMXMng::GetFlag()
+{
+	return startFlag_;
 }
 
 std::pair<int, int> TMXMng::GetMapSize(void)

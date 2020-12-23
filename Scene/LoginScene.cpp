@@ -145,7 +145,7 @@ bool LoginScene::StartInit(void)
 		}
 		else
 		{
-			if (lpNetWork.GetStartFlag())
+			if (lpNetWork.GetStartFlag() && lpTMXMng.GetFlag())
 			{
 				lpNetWork.SendAllMes(MesType::STANBY_GUEST);
 				upMode = UpMode::Play;

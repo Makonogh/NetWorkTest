@@ -3,6 +3,7 @@
 #include "HostState.h"
 #include "../_debug/_DebugConOut.h"
 #include "../TMX/TMXMng.h"
+#include "../Scene/SceneMng.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -180,13 +181,16 @@ void NetWork::Init()
 
 	revFunc_[MesType::STANBY_HOST] = [&]() {
 		revData_.erase(MesType::STANBY_HOST);
-		startFlag_ = true; };
+			startFlag_ = true; 
+		};
 
 	revFunc_[MesType::STANBY_GUEST] = [&]() {
 		revData_.erase(MesType::STANBY_GUEST);
 		startFlag_ = true; };
 
-	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {};
+	revFunc_[MesType::COUNT_DOWN_GAME] = [&]() {
+		revData_.erase(MesType::COUNT_DOWN_GAME);
+		startFlag_ = true; };
 
 	revFunc_[MesType::POS] = [&]() {
 		revPos_[revData_[MesType::POS][0].iData][0] = revData_[MesType::POS][1].iData;
@@ -194,12 +198,28 @@ void NetWork::Init()
 		revPos_[revData_[MesType::POS][0].iData][2] = revData_[MesType::POS][3].iData;
 	};
 
-	revFunc_[MesType::SET_BOMB] = [&]() {};
+	revFunc_[MesType::SET_BOMB] = [&]() {
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][0] = revData_[MesType::SET_BOMB][1].iData;			// bomb‚ÌID
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][1] = revData_[MesType::SET_BOMB][2].iData;			// xÀ•W
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][2] = revData_[MesType::SET_BOMB][3].iData;			// yÀ•W
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][3] = revData_[MesType::SET_BOMB][4].iData;			// length
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][4] = revData_[MesType::SET_BOMB][5].iData;			// ŽžŠÔ
+		revBomb_[revData_[MesType::SET_BOMB][0].iData][5] = revData_[MesType::SET_BOMB][6].iData;			// ŽžŠÔ
+		
+	};
 
-	revFunc_[MesType::RESULT] = [&]() {};
+	revFunc_[MesType::RESULT] = [&]() {
+		for (auto data : revData_[MesType::RESULT])
+		{
+			if (data.iData >= 0)
+			{
+				TRACE("%d\n", data.iData / 5 + 1);
+			}
+		}
+	};
 
 	revFunc_[MesType::DETH] = [&]() {
-		revData_[MesType::DETH];
+		revDeth_[revData_[MesType::DETH][0].iData] = true;
 		return;
 	};
 
@@ -398,18 +418,38 @@ bool NetWork::GetStartFlag(void)
 	return startFlag_;
 }
 
+bool NetWork::GetDethData(int id)
+{
+	return revDeth_[id];
+}
+
 std::vector<unionData> NetWork::GetRevData(MesType mesType)
 {
 	return revData_[mesType];
 }
 
-std::array<int,3> NetWork::GetPosData(int id)
+std::array<int, 3> NetWork::GetPosData(int id)
 {
 	if (revPos_.find(id) == revPos_.end())
 	{
 		return std::array{ -1,-1,-1 };
 	}
-	return revPos_[id];
+	else
+	{
+		return revPos_[id];
+	}
+}
+
+std::array<int, 6> NetWork::GetBombData(int id)
+{
+	if (revBomb_.find(id) == revBomb_.end())
+	{
+		return std::array{ -1,-1,-1,-1,-1,-1 };
+	}
+	else
+	{
+		return revBomb_[id];
+	}
 }
 
 

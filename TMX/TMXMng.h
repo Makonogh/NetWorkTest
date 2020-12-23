@@ -33,6 +33,7 @@ public:
 	bool LoadTSX(void);
 	bool SendMapData(void);
 	bool LoadRevTMX(std::vector<unionData>& data);
+	bool GetFlag();
 	std::pair<int, int> GetMapSize(void);
 private:
 	TMXMng();
@@ -41,11 +42,14 @@ private:
 	// 読み込んだtmxをとりあえずノード　データ　アトリビュート全部コンソールに表示する
 	bool LoadMapData(rapidxml::xml_node<>* node);	// マップデータをLayerMap_に格納する
 	bool LoadCSV();		// CSVを抽出
-	
+	bool startFlag_;
 	unsigned int width_;
 	unsigned int length_;
 	unsigned int layer_;
 	std::map < LAYER, std::vector<unsigned char>> LayerMap_;
 	std::vector<unsigned int> CSV_;							// TMXのCSV部分の数字だけを格納
+
+
+	std::mutex mtx;
 };
 

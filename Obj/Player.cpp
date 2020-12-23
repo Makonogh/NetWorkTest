@@ -86,7 +86,7 @@ void Player::UpdateOpe()
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_DOWN)
 	{
 		pos.y += 4;
-		tilePos_.y = (pos.y + 32) / 32;
+		tilePos_.y = (pos.y + 30) / 32;
 		dir_ = DIR::DOWN;
 	}
 	if (GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_RIGHT)
@@ -137,21 +137,19 @@ void Player::UpdateOpe()
 		unionData data[7] = {};
 		data[0].iData = myID_;
 		data[1].iData = myID_ + 1;
-		data[2].iData = pos_.x;
-		data[3].iData = pos_.y;
+		data[2].iData = tilePos_.x * 32;
+		data[3].iData = tilePos_.y * 32;
 		data[4].iData = 3;
 		auto t = (lpSceneMng.GetTime());
-		auto time = t.time_since_epoch();
-		auto value = std::chrono::duration_cast<std::chrono::milliseconds>(time);
-		long long ti = value.count();
-
-		data[5].iData = static_cast<int> (ti >> 8);
-		data[6].iData = static_cast<int> (ti);
+		Time ti;
+		ti.Data = t;
+		
+		data[5].iData = ti.iData[0];
+		data[6].iData = ti.iData[1];
 
 		sendData = { data[0], data[1],data[2],data[3] ,data[4] ,data[5] ,data[6] };
 		lpNetWork.SendAllMes(MesType::SET_BOMB, sendData);
-
-		dynamic_cast<GameScene&>(scene_).SetBomb(tilePos_ * 32, 3);
+		dynamic_cast<GameScene&>(scene_).SetBomb(tilePos_ * 32, 3,t);
 	}
 
 	MesPacket sendData;
@@ -177,12 +175,25 @@ void Player::UpdateAuto()
 
 void Player::UpdateRev()
 {
-	auto data = lpNetWork.GetPosData(myID_);
-	if (data[2] != -1)
+	auto dataPos = lpNetWork.GetPosData(myID_);
+	if (dataPos[2] != -1)
 	{
-		pos_.x = data[0];
-		pos_.y = data[1];
-		dir_ = static_cast<DIR> (data[2]);
+		pos_.x = dataPos[0];
+		pos_.y = dataPos[1];
+		dir_ = static_cast<DIR> (dataPos[2]);
+	}
+	auto dataBomb = lpNetWork.GetBombData(myID_);
+	if (dataBomb[0] != -1)
+	{
+		Time t;
+		t.iData[0] = dataBomb[4];
+		t.iData[1] = dataBomb[5];
+		
+		dynamic_cast<GameScene&>(scene_).SetBomb({dataBomb[1],dataBomb[2]}, dataBomb[3],t.Data);
+	}
+	if (lpNetWork.GetDethData(myID_))
+	{
+		DethFlag_ = true;
 	}
 }
 
@@ -198,5 +209,9 @@ int Player::GetID()
 }
 
 Player::~Player()
+{
+}
+
+Time::Time()
 {
 }
