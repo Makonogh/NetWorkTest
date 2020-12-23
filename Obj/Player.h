@@ -36,6 +36,7 @@ public:
     void UpdateOpe() override;
     void UpdateAuto() override;
     void UpdateRev() override;
+    bool GetFlag() override;
     int GetID();
     ~Player();
 private:
@@ -46,9 +47,12 @@ private:
     int Image_[20];                  // キャラのアニメーション画像バンドル
     int AnimFrame_;                  // アニメ用のフレーム
     int Frame_;                      // キャラ特融のフレーム
+    bool DethFlag_;                 // 死んでるかフラグ 
     DIR dir_;                       // 方向
     PLAY_TYPE playType_;                // 自分のキャラのタイプ
     std::vector < std::pair<int, int>> KeyLog;
     BaseScene& scene_;
+    int old;
+    int now;
 };
 

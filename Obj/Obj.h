@@ -28,6 +28,7 @@ public:
 	virtual void UpdateOpe();				// プレイヤークラスの操作する関数(charが使用
 	virtual void UpdateAuto();				// オートパイロットで操作する関数(charが使用
 	virtual void UpdateRev();				// ネットの獲得情報で操作する関数(charが使用
+	virtual bool GetFlag();
 	virtual ~Obj() = 0;
 protected:
 	OBJ_TYPE type_;					// 自分のオブジェクトのタイプ	

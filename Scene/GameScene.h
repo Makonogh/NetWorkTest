@@ -20,7 +20,7 @@ class GameScene :
 public:
 	GameScene();
 	~GameScene();
-	void SetBomb();													// 爆弾の設置（Charクラスが呼ぶ）
+	void SetBomb(Vector2 pos,int length);													// 爆弾の設置（Charクラスが呼ぶ）
 	void SetGene(Vector2 tipos);
 	std::list<std::shared_ptr <Obj>> GetObj();						// Objクラスを見たい
 	uniqueScene Update(uniqueScene own) override;					// アップデート

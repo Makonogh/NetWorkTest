@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <mutex>
+#include <chrono>
 #include "BaseScene.h"
 #define lpSceneMng SceneMng::GetInstance()
 
@@ -28,6 +29,7 @@ public:
 		delete s_instance;
 		s_instance = nullptr;
 	}
+	std::chrono::system_clock::time_point GetTime();
 	void Run(void);
 private:
 	SceneMng();

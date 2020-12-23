@@ -6,6 +6,11 @@
 
 SceneMng* SceneMng::s_instance = nullptr;
 
+std::chrono::system_clock::time_point SceneMng::GetTime()
+{
+	return start_;
+}
+
 void SceneMng::Run(void)
 {
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))

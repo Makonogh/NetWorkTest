@@ -44,6 +44,11 @@ void Obj::UpdateRev()
 {
 }
 
+bool Obj::GetFlag()
+{
+	return false;
+}
+
 Obj::~Obj()
 {
 }

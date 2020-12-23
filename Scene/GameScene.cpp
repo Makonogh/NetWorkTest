@@ -45,8 +45,9 @@ GameScene::~GameScene()
 {
 }
 
-void GameScene::SetBomb()
+void GameScene::SetBomb(Vector2 pos,int length)
 {
+	
 }
 
 void GameScene::SetGene(Vector2 tipos)
@@ -68,6 +69,9 @@ uniqueScene GameScene::Update(uniqueScene own)
 	{
 		data->Update();
 	}
+	auto erase = std::remove_if(PlayerList_.begin(), PlayerList_.end(),
+		[](std::shared_ptr <Obj> data) { return data->GetFlag(); });
+	PlayerList_.erase(erase,PlayerList_.end());
 	Draw();
 	return own;
 }
