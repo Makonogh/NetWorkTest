@@ -384,10 +384,9 @@ void NetWork::RevUpdate(void)
 				int writePos = 0;				// ƒf[ƒ^Ši”[‚Ìvector‚Ì‘‚«ž‚ÝˆÊ’u
 				NetWorkRecv(data.NWHandle, &header, sizeof(header));
 
-				revData_[header.mesHeader.type].resize(header.mesHeader.length_);
 				if (header.mesHeader.length_ > 0)
 				{
-
+					revData_[header.mesHeader.type].resize(header.mesHeader.length_);
 					if (sizeof(unionData) * header.mesHeader.length_ <= static_cast<unsigned int>(GetNetWorkDataLength(data.NWHandle)))
 					{
 						NetWorkRecv(data.NWHandle, &revData_[header.mesHeader.type][writePos], sizeof(unionData) * header.mesHeader.length_);
